@@ -1,0 +1,19 @@
+# Current tested environment (fresh installation, 2026-10-19, macOS 27.2 on Apple silicon).
+#   conda env create -f environment-current.yml
+#   conda activate corridor
+#   python smoke_test.py
+# coin-or-cbc supplies a native CBC executable; steiner_exact.cbc_path() finds it on PATH
+# when PuLP's bundled binary cannot start. PuLP is pinned below 4: PuLP 4.x no longer ships
+# PULP_CBC_CMD or pulp.apis.coin_api, which the solver-status guard and its test use.
+name: corridor
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.15
+  - coin-or-cbc=2.10.13
+  - pip
+  - pip:
+      - networkx==3.7
+      - PuLP==3.3.2
+      - matplotlib==3.11.2
+      - numpy==2.5.4

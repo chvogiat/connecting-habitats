@@ -1,0 +1,73 @@
+Connecting Habitats: From Optimal Trees to Survivable Networks
+Supplementary Materials: companion_code.zip, index of contents
+
+This archive holds the teaching instance, the species profiles, five archived
+OpenStreetMap road-network extracts, the Python scripts for the three core sessions,
+the replication scripts with their recorded results, four optional project scripts,
+and a self-contained browser explorer. README.md describes setup, which file
+reproduces each table and figure of the article, and the optional projects.
+net_extracts/README.md describes the road-network extracts and their limitations.
+
+The code is a snapshot of the code used to obtain the published results.
+
+Map data in net_extracts/ (c) OpenStreetMap contributors, available under the
+Open Database License (ODbL).
+
+File listing (generated with "ls -R1F"):
+
+CONTENTS.txt
+LICENSE
+README.md
+budget_frontier.json
+check_cost.py
+consensus_fixing_results.json
+consensus_greedy_results.json
+corridor_budget.py
+corridor_consensus_fix.py
+corridor_dashboard.html
+corridor_redundant.py
+corridor_robust.py
+corridor_starter.py
+edges.csv
+environment-current.yml
+generate_instance.py
+lp_relaxation_check.py
+make_fig1.py
+make_fig_species.py
+net_extracts/
+nodes.csv
+profile_sweep.json
+profile_sweep.py
+real_data_feasibility.py
+robustness_sweep.json
+smoke_test.py
+solver_records.py
+steiner_exact.py
+
+./net_extracts:
+README.md
+ashland_oregon_usa/
+ely_cambridgeshire_england/
+mahomet_illinois_usa/
+monticello_illinois_usa/
+piatt_county_illinois_usa/
+
+./net_extracts/ashland_oregon_usa:
+edges.csv
+nodes.csv
+
+./net_extracts/ely_cambridgeshire_england:
+edges.csv
+nodes.csv
+
+./net_extracts/mahomet_illinois_usa:
+edges.csv
+nodes.csv
+
+./net_extracts/monticello_illinois_usa:
+edges.csv
+nodes.csv
+
+./net_extracts/piatt_county_illinois_usa:
+edges.csv
+nodes.csv

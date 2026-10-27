@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ecological Corridor Explorer (live solver)</title>
+<style>
+  :root{ --bg:#fff; --panel:#f6f7f9; --ink:#1c2431; --muted:#5b6473; --line:#dce1e8; --accent:#2563eb; }
+  @media (prefers-color-scheme:dark){ :root{ --bg:#0f1420; --panel:#161d2b; --ink:#e7ecf3; --muted:#9aa6b8; --line:#28324a; } }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);}
+  .wrap{display:flex;flex-wrap:wrap;gap:16px;padding:16px;max-width:1120px;margin:0 auto;}
+  .controls{flex:1 1 320px;min-width:300px;}
+  .map{flex:1 1 520px;min-width:340px;}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;}
+  h1{font-size:19px;margin:0 0 2px;} .sub{color:var(--muted);font-size:12.5px;margin:0 0 12px;}
+  .lab{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px;}
+  .btns{display:flex;gap:7px;flex-wrap:wrap;}
+  button.tog{border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 11px;border-radius:9px;cursor:pointer;font-size:13px;}
+  button.tog.on{background:var(--accent);color:#fff;border-color:transparent;}
+  #sp_deer.on{background:#2563eb;} #sp_turtle.on{background:#c0392b;} #sp_vole.on{background:#2e7d32;}
+  input[type=range]{width:100%;} .row{display:flex;align-items:center;gap:10px;}
+  .row label{font-size:13px;min-width:64px;} .row .val{font-size:13px;font-variant-numeric:tabular-nums;min-width:44px;text-align:right;}
+  details{margin-top:8px;} summary{cursor:pointer;font-size:13px;color:var(--accent);}
+  .crow{display:grid;grid-template-columns:96px 1fr 40px;align-items:center;gap:8px;margin:5px 0;}
+  .crow label{font-size:12px;color:var(--muted);} .cval{font-size:12px;text-align:right;font-variant-numeric:tabular-nums;}
+  .stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px;}
+  .stat b{font-variant-numeric:tabular-nums;} .big{font-size:26px;font-weight:700;}
+  .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;}
+  .cbar{height:9px;border-radius:6px;margin:6px 0;background:linear-gradient(90deg,#ffe9a8,#f59e0b,#b91c1c);}
+  svg{width:100%;height:auto;background:transparent;border-radius:10px;}
+  select{padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);font-size:13px;}
+  #spin{display:none;font-size:12px;color:var(--accent);margin-left:6px;}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+</style>
+</head>
+<body>
+<h2 class="sr-only">Interactive ecological corridor explorer with a live Steiner-tree solver, weight editing, budget frontier, and consensus corridors.</h2>
+<div class="wrap">
+  <div class="panel controls">
+    <h1>Ecological Corridor Explorer</h1>
+    <p class="sub">Live <b>Kou heuristic</b> &mdash; edit weights and watch the corridor change.
+       Every number on this page is heuristic. Companion to <i>Connecting Habitats: From
+       Optimal Trees to Survivable Networks</i>; the exact programs run offline.</p>
+    <details><summary>What this page solves, and what it does not</summary>
+      <p class="hint">
+      <b>The tree is heuristic.</b> The page runs Algorithm&nbsp;1 of the module
+      (Kou&ndash;Markowsky&ndash;Berman). It never proves optimality. On the frozen instance the
+      heuristic sits 10&ndash;14% above the exact optimum, so a corridor that looks like the
+      optimum is not a certificate that it is one. Run <tt>steiner_exact.py</tt> for that.<br/><br/>
+      <b>The budget frontier searches subsets but not trees.</b> Which <i>p</i> patches to serve is
+      part of the problem, so the page evaluates every size-<i>p</i> subset containing the root and
+      keeps the cheapest heuristic tree. What remains is the heuristic gap. Two cautions carry over
+      from the module: the exact optimal designs at successive <i>p</i> are <b>not nested</b>, so a
+      step on this frontier is the difference between two separately optimized networks; and
+      <tt>corridor_budget.py</tt> solves the same quota problem exactly. Because the search ranks
+      subsets by <i>heuristic</i> cost, it can still prefer the wrong patches: for the deer at
+      <i>p</i>=7 it drops Embarras Headwaters where the exact model drops Salt Fork Wetland, and it
+      is right to, given the trees it can see. Comparing the two lists is a good exercise.<br/><br/>
+      <b>&ldquo;Road aversion&rdquo; is an exponent, not the module's &rho;.</b> The slider raises every
+      class multiplier to the power &gamma;, so &gamma;=0 flattens the classes to pure distance and
+      &gamma;=1 restores the species profile. The profile sweep in the module instead sets
+      <i>r<sub>c</sub></i>=&rho;<sup>rank(c)/7</sup>. Both change profile <i>shape</i>; they are not the
+      same parameter. Multiplying a whole profile by a constant would change nothing at all.<br/><br/>
+      <b>Consensus is a selection frequency.</b> The shading is how often a segment appears across
+      perturbed re-solves under the stated &sigma;, not a probability that the segment belongs in an
+      ecologically correct corridor, and not a validation of anything. With &ldquo;all species&rdquo;
+      on, each segment is scored by its <i>minimum</i> frequency across the three species, which is a
+      definition local to this page.<br/><br/>
+      <b>The survivability model is not here.</b> The comparison the module is built around needs
+      the exact program: see <tt>corridor_redundant.py</tt>.
+      </p>
+    </details>
+
+    <div class="lab">Species (starting resistance profile)</div>
+    <div class="btns">
+      <button class="tog" id="sp_deer" data-sp="white_tailed_deer">Deer</button>
+      <button class="tog" id="sp_turtle" data-sp="eastern_box_turtle">Box turtle</button>
+      <button class="tog" id="sp_vole" data-sp="meadow_vole">Meadow vole</button>
+    </div>
+
+    <div class="lab">Movement resistance (edit to re-solve live)</div>
+    <div class="row"><label>Road aversion</label>
+      <input type="range" id="master" min="0" max="2.5" step="0.05" value="1"/>
+      <span class="val" id="masterVal">1.00</span></div>
+    <p class="hint" style="margin-top:2px">Exponent &gamma; on the class multipliers.
+       0 = ignore road type (pure distance) &middot; 1 = species profile &middot; higher = avoid big
+       roads more. Not the &rho; of the module's profile sweep.</p>
+    <details><summary>Per-road-class multipliers</summary>
+      <div id="classSliders"></div>
+      <button class="tog" id="resetW" style="margin-top:6px;">Reset to species</button>
+    </details>
+
+    <div class="lab">View</div>
+    <div class="btns">
+      <button class="tog" id="mode_single">Single tree</button>
+      <button class="tog" id="mode_cons">Consensus (robustness)</button>
+    </div>
+
+    <div class="lab">Budget: connect the cheapest <span id="pval">8</span> of 8 patches
+      <span style="text-transform:none;letter-spacing:0">(best subset, heuristic tree)</span></div>
+    <input type="range" id="pslider" min="2" max="8" step="1" value="8"/>
+
+    <div id="singleStats">
+      <div class="stat"><span>Patches connected</span><b id="s_patches">8 / 8</b></div>
+      <div class="stat"><span>Independent links <i>C</i><sub>ind</sub></span><b id="s_ind">&ndash;</b></div>
+      <div class="stat"><span>Heuristic tree <i>C</i><sub>KMB</sub></span><b id="s_cost">&ndash;</b></div>
+      <div class="stat"><span>Saving from sharing</span><b id="s_share">&ndash;</b></div>
+      <div class="stat"><span>Removed by cleanup (steps 4&ndash;5)</span><b id="s_clean">&ndash;</b></div>
+      <p class="hint" id="hint"></p>
+    </div>
+
+    <div id="consControls" style="display:none">
+      <div class="lab">Consensus settings <span id="spin">computing&hellip;</span></div>
+      <div class="row"><label>Draws</label>
+        <select id="nsel"><option>60</option><option>120</option><option>240</option><option selected>400</option></select>
+        <label style="min-width:0;margin-left:8px;"><input type="checkbox" id="combined"/> all species</label></div>
+      <div class="row"><label>Noise &sigma;</label>
+        <input type="range" id="sig" min="0.1" max="0.7" step="0.05" value="0.35"/>
+        <span class="val" id="sigVal">0.35</span></div>
+    </div>
+    <div id="consStats" style="display:none">
+      <div class="cbar"></div>
+      <div class="stat"><span>Segments selected in &ge;90% of draws</span><b id="r_backbone">&ndash;</b></div>
+      <p class="hint" id="r_hint"></p>
+      <p class="hint">Darker = selected in more of the perturbed re-solves. This is an empirical
+        selection frequency under the resistance shocks set above, not a probability that a segment
+        belongs in an ecologically correct corridor. The frequently selected segments need not form
+        a connected corridor, and on this instance they do not. With &ldquo;all species&rdquo; on, a
+        segment is scored by its lowest frequency across the three species.</p>
+    </div>
+  </div>
+
+  <div class="panel map">
+    <svg id="svg" viewBox="0 0 700 560" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+</div>
+
+<script id="data" type="application/json">{"nodes": [{"id": 0, "x": -88.463601, "y": 39.917958, "patch": false, "name": ""}, {"id": 1, "x": -88.432821, "y": 39.914679, "patch": false, "name": ""}, {"id": 2, "x": -88.393265, "y": 39.918092, "patch": false, "name": ""}, {"id": 3, "x": -88.35755, "y": 39.916277, "patch": false, "name": ""}, {"id": 4, "x": -88.319975, "y": 39.915832, "patch": false, "name": ""}, {"id": 5, "x": -88.294305, "y": 39.915428, "patch": false, "name": ""}, {"id": 6, "x": -88.259782, "y": 39.926405, "patch": false, "name": ""}, {"id": 7, "x": -88.219006, "y": 39.924329, "patch": false, "name": ""}, {"id": 8, "x": -88.189084, "y": 39.925282, "patch": false, "name": ""}, {"id": 9, "x": -88.145811, "y": 39.914967, "patch": false, "name": ""}, {"id": 10, "x": -88.119714, "y": 39.925313, "patch": false, "name": ""}, {"id": 11, "x": -88.073663, "y": 39.925649, "patch": false, "name": ""}, {"id": 12, "x": -88.048921, "y": 39.920127, "patch": false, "name": ""}, {"id": 13, "x": -88.009445, "y": 39.917619, "patch": false, "name": ""}, {"id": 14, "x": -87.971047, "y": 39.920401, "patch": false, "name": ""}, {"id": 15, "x": -87.945086, "y": 39.916186, "patch": false, "name": ""}, {"id": 16, "x": -88.459919, "y": 39.951806, "patch": false, "name": ""}, {"id": 17, "x": -88.428715, "y": 39.960575, "patch": false, "name": ""}, {"id": 18, "x": -88.388773, "y": 39.954606, "patch": false, "name": ""}, {"id": 19, "x": -88.359671, "y": 39.959535, "patch": false, "name": ""}, {"id": 20, "x": -88.328625, "y": 39.94906, "patch": false, "name": ""}, {"id": 21, "x": -88.285181, "y": 39.960303, "patch": false, "name": ""}, {"id": 22, "x": -88.255987, "y": 39.956637, "patch": false, "name": ""}, {"id": 23, "x": -88.222788, "y": 39.956683, "patch": false, "name": ""}, {"id": 24, "x": -88.18184, "y": 39.950235, "patch": false, "name": ""}, {"id": 25, "x": -88.147408, "y": 39.957868, "patch": false, "name": ""}, {"id": 26, "x": -88.107289, "y": 39.952672, "patch": false, "name": ""}, {"id": 27, "x": -88.074111, "y": 39.959981, "patch": false, "name": ""}, {"id": 28, "x": -88.050309, "y": 39.953163, "patch": false, "name": ""}, {"id": 29, "x": -88.010301, "y": 39.957857, "patch": false, "name": ""}, {"id": 30, "x": -87.97411, "y": 39.953639, "patch": false, "name": ""}, {"id": 31, "x": -87.939821, "y": 39.950825, "patch": false, "name": ""}, {"id": 32, "x": -88.456802, "y": 39.980263, "patch": false, "name": ""}, {"id": 33, "x": -88.417653, "y": 39.986038, "patch": false, "name": ""}, {"id": 34, "x": -88.39796, "y": 39.983401, "patch": false, "name": ""}, {"id": 35, "x": -88.357995, "y": 39.980579, "patch": false, "name": ""}, {"id": 36, "x": -88.327657, "y": 39.988163, "patch": false, "name": ""}, {"id": 37, "x": -88.28056, "y": 39.991909, "patch": false, "name": ""}, {"id": 38, "x": -88.254151, "y": 39.983265, "patch": false, "name": ""}, {"id": 39, "x": -88.215489, "y": 39.989429, "patch": false, "name": ""}, {"id": 40, "x": -88.188797, "y": 39.987511, "patch": false, "name": ""}, {"id": 41, "x": -88.140982, "y": 39.9845, "patch": false, "name": ""}, {"id": 42, "x": -88.112112, "y": 39.980086, "patch": false, "name": ""}, {"id": 43, "x": -88.085054, "y": 39.992974, "patch": false, "name": ""}, {"id": 44, "x": -88.045234, "y": 39.980199, "patch": false, "name": ""}, {"id": 45, "x": -88.0051, "y": 39.986765, "patch": false, "name": ""}, {"id": 46, "x": -87.966951, "y": 39.984152, "patch": false, "name": ""}, {"id": 47, "x": -87.944385, "y": 39.992882, "patch": false, "name": ""}, {"id": 48, "x": -88.453131, "y": 40.021522, "patch": false, "name": ""}, {"id": 49, "x": -88.421232, "y": 40.020302, "patch": false, "name": ""}, {"id": 50, "x": -88.388577, "y": 40.023378, "patch": false, "name": ""}, {"id": 51, "x": -88.357938, "y": 40.01535, "patch": true, "name": "Kickapoo Prairie Remnant"}, {"id": 52, "x": -88.317548, "y": 40.02056, "patch": false, "name": ""}, {"id": 53, "x": -88.28176, "y": 40.017023, "patch": false, "name": ""}, {"id": 54, "x": -88.253996, "y": 40.021754, "patch": false, "name": ""}, {"id": 55, "x": -88.209996, "y": 40.018929, "patch": false, "name": ""}, {"id": 56, "x": -88.176301, "y": 40.017073, "patch": false, "name": ""}, {"id": 57, "x": -88.151435, "y": 40.02136, "patch": false, "name": ""}, {"id": 58, "x": -88.111119, "y": 40.022246, "patch": false, "name": ""}, {"id": 59, "x": -88.076277, "y": 40.017331, "patch": false, "name": ""}, {"id": 60, "x": -88.041331, "y": 40.024664, "patch": true, "name": "Embarras Headwaters"}, {"id": 61, "x": -88.005816, "y": 40.016651, "patch": false, "name": ""}, {"id": 62, "x": -87.970072, "y": 40.021649, "patch": false, "name": ""}, {"id": 63, "x": -87.946731, "y": 40.015747, "patch": false, "name": ""}, {"id": 64, "x": -88.464902, "y": 40.05128, "patch": false, "name": ""}, {"id": 65, "x": -88.431824, "y": 40.049841, "patch": false, "name": ""}, {"id": 66, "x": -88.39531, "y": 40.059624, "patch": false, "name": ""}, {"id": 67, "x": -88.354916, "y": 40.055874, "patch": false, "name": ""}, {"id": 68, "x": -88.317499, "y": 40.062419, "patch": false, "name": ""}, {"id": 69, "x": -88.28427, "y": 40.055203, "patch": false, "name": ""}, {"id": 70, "x": -88.255899, "y": 40.053812, "patch": false, "name": ""}, {"id": 71, "x": -88.2129, "y": 40.062546, "patch": false, "name": ""}, {"id": 72, "x": -88.186575, "y": 40.05039, "patch": false, "name": ""}, {"id": 73, "x": -88.151912, "y": 40.060503, "patch": false, "name": ""}, {"id": 74, "x": -88.112237, "y": 40.051076, "patch": false, "name": ""}, {"id": 75, "x": -88.078619, "y": 40.05417, "patch": false, "name": ""}, {"id": 76, "x": -88.040501, "y": 40.052606, "patch": false, "name": ""}, {"id": 77, "x": -88.011405, "y": 40.060465, "patch": false, "name": ""}, {"id": 78, "x": -87.969982, "y": 40.052588, "patch": false, "name": ""}, {"id": 79, "x": -87.943173, "y": 40.050667, "patch": false, "name": ""}, {"id": 80, "x": -88.457116, "y": 40.084489, "patch": false, "name": ""}, {"id": 81, "x": -88.425271, "y": 40.095775, "patch": false, "name": ""}, {"id": 82, "x": -88.390736, "y": 40.082084, "patch": false, "name": ""}, {"id": 83, "x": -88.35698, "y": 40.088225, "patch": false, "name": ""}, {"id": 84, "x": -88.316727, "y": 40.092257, "patch": false, "name": ""}, {"id": 85, "x": -88.284787, "y": 40.096115, "patch": false, "name": ""}, {"id": 86, "x": -88.256521, "y": 40.085902, "patch": false, "name": ""}, {"id": 87, "x": -88.222728, "y": 40.085324, "patch": false, "name": ""}, {"id": 88, "x": -88.187925, "y": 40.092591, "patch": false, "name": ""}, {"id": 89, "x": -88.153045, "y": 40.094396, "patch": true, "name": "Buffalo Trace Savanna"}, {"id": 90, "x": -88.121012, "y": 40.094877, "patch": false, "name": ""}, {"id": 91, "x": -88.086209, "y": 40.090116, "patch": false, "name": ""}, {"id": 92, "x": -88.040477, "y": 40.088003, "patch": false, "name": ""}, {"id": 93, "x": -88.00941, "y": 40.090197, "patch": false, "name": ""}, {"id": 94, "x": -87.973283, "y": 40.08815, "patch": false, "name": ""}, {"id": 95, "x": -87.940792, "y": 40.087985, "patch": false, "name": ""}, {"id": 96, "x": -88.462341, "y": 40.118716, "patch": false, "name": ""}, {"id": 97, "x": -88.417987, "y": 40.128859, "patch": false, "name": ""}, {"id": 98, "x": -88.390322, "y": 40.130498, "patch": false, "name": ""}, {"id": 99, "x": -88.356284, "y": 40.126479, "patch": false, "name": ""}, {"id": 100, "x": -88.31448, "y": 40.120381, "patch": false, "name": ""}, {"id": 101, "x": -88.280036, "y": 40.11603, "patch": false, "name": ""}, {"id": 102, "x": -88.252185, "y": 40.130216, "patch": false, "name": ""}, {"id": 103, "x": -88.218296, "y": 40.122359, "patch": false, "name": ""}, {"id": 104, "x": -88.18466, "y": 40.127227, "patch": false, "name": ""}, {"id": 105, "x": -88.147165, "y": 40.123048, "patch": false, "name": ""}, {"id": 106, "x": -88.110452, "y": 40.125953, "patch": false, "name": ""}, {"id": 107, "x": -88.08209, "y": 40.124729, "patch": false, "name": ""}, {"id": 108, "x": -88.03681, "y": 40.122471, "patch": false, "name": ""}, {"id": 109, "x": -88.00991, "y": 40.129227, "patch": false, "name": ""}, {"id": 110, "x": -87.969192, "y": 40.118755, "patch": false, "name": ""}, {"id": 111, "x": -87.934502, "y": 40.118437, "patch": false, "name": ""}, {"id": 112, "x": -88.467276, "y": 40.163441, "patch": false, "name": ""}, {"id": 113, "x": -88.419009, "y": 40.153396, "patch": false, "name": ""}, {"id": 114, "x": -88.390738, "y": 40.164462, "patch": false, "name": ""}, {"id": 115, "x": -88.357333, "y": 40.163912, "patch": false, "name": ""}, {"id": 116, "x": -88.315746, "y": 40.159854, "patch": false, "name": ""}, {"id": 117, "x": -88.286386, "y": 40.162914, "patch": false, "name": ""}, {"id": 118, "x": -88.254956, "y": 40.153189, "patch": false, "name": ""}, {"id": 119, "x": -88.219166, "y": 40.157501, "patch": false, "name": ""}, {"id": 120, "x": -88.187209, "y": 40.152811, "patch": false, "name": ""}, {"id": 121, "x": -88.144858, "y": 40.162966, "patch": false, "name": ""}, {"id": 122, "x": -88.106786, "y": 40.15649, "patch": false, "name": ""}, {"id": 123, "x": -88.077859, "y": 40.155231, "patch": false, "name": ""}, {"id": 124, "x": -88.051072, "y": 40.16268, "patch": false, "name": ""}, {"id": 125, "x": -88.015438, "y": 40.151726, "patch": false, "name": ""}, {"id": 126, "x": -87.972171, "y": 40.157203, "patch": true, "name": "Homer Lake Margin"}, {"id": 127, "x": -87.932577, "y": 40.155106, "patch": false, "name": ""}, {"id": 128, "x": -88.465906, "y": 40.193869, "patch": false, "name": ""}, {"id": 129, "x": -88.42233, "y": 40.196781, "patch": false, "name": ""}, {"id": 130, "x": -88.384817, "y": 40.19074, "patch": false, "name": ""}, {"id": 131, "x": -88.362451, "y": 40.197204, "patch": false, "name": ""}, {"id": 132, "x": -88.32254, "y": 40.186147, "patch": true, "name": "Lake of the Woods"}, {"id": 133, "x": -88.281593, "y": 40.190416, "patch": false, "name": ""}, {"id": 134, "x": -88.256008, "y": 40.189584, "patch": false, "name": ""}, {"id": 135, "x": -88.220242, "y": 40.184204, "patch": false, "name": ""}, {"id": 136, "x": -88.184643, "y": 40.193397, "patch": false, "name": ""}, {"id": 137, "x": -88.141007, "y": 40.191105, "patch": false, "name": ""}, {"id": 138, "x": -88.108539, "y": 40.189597, "patch": false, "name": ""}, {"id": 139, "x": -88.083898, "y": 40.187766, "patch": false, "name": ""}, {"id": 140, "x": -88.045834, "y": 40.194336, "patch": false, "name": ""}, {"id": 141, "x": -88.0103, "y": 40.184282, "patch": false, "name": ""}, {"id": 142, "x": -87.970229, "y": 40.192205, "patch": false, "name": ""}, {"id": 143, "x": -87.941635, "y": 40.196334, "patch": false, "name": ""}, {"id": 144, "x": -88.465012, "y": 40.22613, "patch": false, "name": ""}, {"id": 145, "x": -88.424619, "y": 40.224136, "patch": false, "name": ""}, {"id": 146, "x": -88.385908, "y": 40.218733, "patch": false, "name": ""}, {"id": 147, "x": -88.359746, "y": 40.222746, "patch": false, "name": ""}, {"id": 148, "x": -88.321425, "y": 40.230701, "patch": false, "name": ""}, {"id": 149, "x": -88.290643, "y": 40.220928, "patch": false, "name": ""}, {"id": 150, "x": -88.256416, "y": 40.229115, "patch": false, "name": ""}, {"id": 151, "x": -88.214261, "y": 40.220574, "patch": false, "name": ""}, {"id": 152, "x": -88.184671, "y": 40.230619, "patch": false, "name": ""}, {"id": 153, "x": -88.15547, "y": 40.22933, "patch": false, "name": ""}, {"id": 154, "x": -88.107095, "y": 40.225676, "patch": false, "name": ""}, {"id": 155, "x": -88.074693, "y": 40.227932, "patch": false, "name": ""}, {"id": 156, "x": -88.050914, "y": 40.227853, "patch": false, "name": ""}, {"id": 157, "x": -88.007486, "y": 40.226361, "patch": false, "name": ""}, {"id": 158, "x": -87.9686, "y": 40.229616, "patch": false, "name": ""}, {"id": 159, "x": -87.942697, "y": 40.229749, "patch": false, "name": ""}, {"id": 160, "x": -88.460682, "y": 40.261565, "patch": false, "name": ""}, {"id": 161, "x": -88.419432, "y": 40.25654, "patch": false, "name": ""}, {"id": 162, "x": -88.386725, "y": 40.259252, "patch": false, "name": ""}, {"id": 163, "x": -88.359453, "y": 40.263462, "patch": false, "name": ""}, {"id": 164, "x": -88.319776, "y": 40.254409, "patch": false, "name": ""}, {"id": 165, "x": -88.283499, "y": 40.255559, "patch": false, "name": ""}, {"id": 166, "x": -88.257412, "y": 40.254193, "patch": false, "name": ""}, {"id": 167, "x": -88.214243, "y": 40.256695, "patch": false, "name": ""}, {"id": 168, "x": -88.190395, "y": 40.264238, "patch": false, "name": ""}, {"id": 169, "x": -88.14745, "y": 40.261677, "patch": false, "name": ""}, {"id": 170, "x": -88.117622, "y": 40.251908, "patch": false, "name": ""}, {"id": 171, "x": -88.085052, "y": 40.252998, "patch": false, "name": ""}, {"id": 172, "x": -88.043789, "y": 40.25997, "patch": false, "name": ""}, {"id": 173, "x": -88.006145, "y": 40.266063, "patch": true, "name": "Salt Fork Wetland"}, {"id": 174, "x": -87.968507, "y": 40.26072, "patch": false, "name": ""}, {"id": 175, "x": -87.940833, "y": 40.260567, "patch": false, "name": ""}, {"id": 176, "x": -88.465184, "y": 40.293706, "patch": false, "name": ""}, {"id": 177, "x": -88.424408, "y": 40.29629, "patch": true, "name": "Sangamon River Woods"}, {"id": 178, "x": -88.391064, "y": 40.285177, "patch": false, "name": ""}, {"id": 179, "x": -88.35035, "y": 40.285364, "patch": false, "name": ""}, {"id": 180, "x": -88.328738, "y": 40.286473, "patch": false, "name": ""}, {"id": 181, "x": -88.283927, "y": 40.298686, "patch": false, "name": ""}, {"id": 182, "x": -88.251322, "y": 40.296284, "patch": false, "name": ""}, {"id": 183, "x": -88.222383, "y": 40.296515, "patch": false, "name": ""}, {"id": 184, "x": -88.184852, "y": 40.295219, "patch": false, "name": ""}, {"id": 185, "x": -88.151367, "y": 40.297953, "patch": false, "name": ""}, {"id": 186, "x": -88.108533, "y": 40.289525, "patch": false, "name": ""}, {"id": 187, "x": -88.079804, "y": 40.293268, "patch": false, "name": ""}, {"id": 188, "x": -88.046033, "y": 40.288673, "patch": false, "name": ""}, {"id": 189, "x": -88.016828, "y": 40.299031, "patch": false, "name": ""}, {"id": 190, "x": -87.967174, "y": 40.29875, "patch": false, "name": ""}, {"id": 191, "x": -87.939535, "y": 40.29461, "patch": false, "name": ""}, {"id": 192, "x": -88.458182, "y": 40.331211, "patch": false, "name": ""}, {"id": 193, "x": -88.420607, "y": 40.326138, "patch": false, "name": ""}, {"id": 194, "x": -88.38443, "y": 40.320481, "patch": false, "name": ""}, {"id": 195, "x": -88.358393, "y": 40.323034, "patch": false, "name": ""}, {"id": 196, "x": -88.326205, "y": 40.323583, "patch": false, "name": ""}, {"id": 197, "x": -88.289171, "y": 40.329382, "patch": false, "name": ""}, {"id": 198, "x": -88.256902, "y": 40.319825, "patch": false, "name": ""}, {"id": 199, "x": -88.212136, "y": 40.333718, "patch": false, "name": ""}, {"id": 200, "x": -88.176303, "y": 40.320859, "patch": true, "name": "Phillippe Prairie"}, {"id": 201, "x": -88.141421, "y": 40.33346, "patch": false, "name": ""}, {"id": 202, "x": -88.109545, "y": 40.327742, "patch": false, "name": ""}, {"id": 203, "x": -88.076285, "y": 40.325576, "patch": false, "name": ""}, {"id": 204, "x": -88.0431, "y": 40.330139, "patch": false, "name": ""}, {"id": 205, "x": -88.014405, "y": 40.322746, "patch": false, "name": ""}, {"id": 206, "x": -87.978118, "y": 40.331488, "patch": false, "name": ""}, {"id": 207, "x": -87.935903, "y": 40.321595, "patch": false, "name": ""}, {"id": 208, "x": -88.459891, "y": 40.354589, "patch": false, "name": ""}, {"id": 209, "x": -88.419969, "y": 40.359549, "patch": false, "name": ""}, {"id": 210, "x": -88.393829, "y": 40.364535, "patch": false, "name": ""}, {"id": 211, "x": -88.348904, "y": 40.364248, "patch": false, "name": ""}, {"id": 212, "x": -88.324915, "y": 40.357837, "patch": false, "name": ""}, {"id": 213, "x": -88.289714, "y": 40.359821, "patch": false, "name": ""}, {"id": 214, "x": -88.251726, "y": 40.355059, "patch": false, "name": ""}, {"id": 215, "x": -88.216592, "y": 40.361443, "patch": false, "name": ""}, {"id": 216, "x": -88.17864, "y": 40.366287, "patch": false, "name": ""}, {"id": 217, "x": -88.148276, "y": 40.357918, "patch": false, "name": ""}, {"id": 218, "x": -88.116038, "y": 40.366687, "patch": false, "name": ""}, {"id": 219, "x": -88.074733, "y": 40.361905, "patch": false, "name": ""}, {"id": 220, "x": -88.042755, "y": 40.364622, "patch": false, "name": ""}, {"id": 221, "x": -88.015325, "y": 40.361062, "patch": false, "name": ""}, {"id": 222, "x": -87.976394, "y": 40.357067, "patch": false, "name": ""}, {"id": 223, "x": -87.943776, "y": 40.356668, "patch": false, "name": ""}], "edges": [{"u": 0, "v": 1, "len": 2637.1, "hw": "residential"}, {"u": 0, "v": 16, "len": 3770.1, "hw": "unclassified"}, {"u": 1, "v": 2, "len": 3377.9, "hw": "unclassified"}, {"u": 1, "v": 17, "len": 5106.4, "hw": "residential"}, {"u": 2, "v": 3, "len": 3037.3, "hw": "track"}, {"u": 2, "v": 18, "len": 4070.9, "hw": "track"}, {"u": 3, "v": 4, "len": 3188.9, "hw": "residential"}, {"u": 3, "v": 19, "len": 4805.0, "hw": "residential"}, {"u": 4, "v": 5, "len": 2178.7, "hw": "residential"}, {"u": 4, "v": 20, "len": 3760.6, "hw": "unclassified"}, {"u": 5, "v": 6, "len": 3172.8, "hw": "unclassified"}, {"u": 5, "v": 21, "len": 5040.9, "hw": "primary"}, {"u": 6, "v": 7, "len": 3467.8, "hw": "residential"}, {"u": 6, "v": 22, "len": 3371.2, "hw": "secondary"}, {"u": 7, "v": 8, "len": 2541.3, "hw": "tertiary"}, {"u": 7, "v": 23, "len": 3605.6, "hw": "secondary"}, {"u": 8, "v": 9, "len": 3846.4, "hw": "unclassified"}, {"u": 8, "v": 24, "len": 2837.2, "hw": "residential"}, {"u": 9, "v": 10, "len": 2494.6, "hw": "track"}, {"u": 9, "v": 25, "len": 4763.9, "hw": "track"}, {"u": 10, "v": 11, "len": 3907.9, "hw": "tertiary"}, {"u": 10, "v": 26, "len": 3214.7, "hw": "primary"}, {"u": 11, "v": 12, "len": 2187.2, "hw": "residential"}, {"u": 11, "v": 27, "len": 3811.0, "hw": "tertiary"}, {"u": 12, "v": 13, "len": 3361.3, "hw": "secondary"}, {"u": 12, "v": 28, "len": 3668.9, "hw": "track"}, {"u": 13, "v": 14, "len": 3272.9, "hw": "secondary"}, {"u": 13, "v": 29, "len": 4467.0, "hw": "track"}, {"u": 14, "v": 15, "len": 2252.1, "hw": "residential"}, {"u": 14, "v": 30, "len": 3698.6, "hw": "unclassified"}, {"u": 15, "v": 31, "len": 3870.8, "hw": "unclassified"}, {"u": 16, "v": 17, "len": 2821.1, "hw": "residential"}, {"u": 16, "v": 32, "len": 3169.8, "hw": "residential"}, {"u": 17, "v": 18, "len": 3453.5, "hw": "track"}, {"u": 17, "v": 33, "len": 2978.2, "hw": "secondary"}, {"u": 17, "v": 34, "len": 3637.4, "hw": "track"}, {"u": 18, "v": 19, "len": 2529.4, "hw": "secondary"}, {"u": 18, "v": 34, "len": 3289.9, "hw": "secondary"}, {"u": 19, "v": 20, "len": 2879.6, "hw": "unclassified"}, {"u": 19, "v": 35, "len": 2340.2, "hw": "track"}, {"u": 20, "v": 21, "len": 3892.0, "hw": "residential"}, {"u": 20, "v": 36, "len": 4341.2, "hw": "residential"}, {"u": 21, "v": 22, "len": 2510.5, "hw": "tertiary"}, {"u": 21, "v": 37, "len": 3530.1, "hw": "primary"}, {"u": 22, "v": 23, "len": 2817.2, "hw": "tertiary"}, {"u": 22, "v": 38, "len": 2959.8, "hw": "residential"}, {"u": 23, "v": 24, "len": 3547.6, "hw": "track"}, {"u": 23, "v": 39, "len": 3687.2, "hw": "residential"}, {"u": 24, "v": 25, "len": 3042.1, "hw": "secondary"}, {"u": 24, "v": 40, "len": 4179.5, "hw": "track"}, {"u": 25, "v": 26, "len": 3452.9, "hw": "secondary"}, {"u": 25, "v": 41, "len": 3006.0, "hw": "residential"}, {"u": 26, "v": 27, "len": 2929.9, "hw": "unclassified"}, {"u": 26, "v": 42, "len": 3070.4, "hw": "primary"}, {"u": 27, "v": 28, "len": 2156.9, "hw": "tertiary"}, {"u": 27, "v": 43, "len": 3778.1, "hw": "residential"}, {"u": 28, "v": 29, "len": 3434.7, "hw": "residential"}, {"u": 28, "v": 44, "len": 3031.7, "hw": "tertiary"}, {"u": 29, "v": 30, "len": 3106.5, "hw": "residential"}, {"u": 29, "v": 45, "len": 3239.0, "hw": "unclassified"}, {"u": 30, "v": 31, "len": 2926.4, "hw": "residential"}, {"u": 30, "v": 46, "len": 3441.0, "hw": "secondary"}, {"u": 31, "v": 47, "len": 4684.4, "hw": "unclassified"}, {"u": 32, "v": 33, "len": 3383.3, "hw": "residential"}, {"u": 32, "v": 48, "len": 4590.3, "hw": "track"}, {"u": 33, "v": 34, "len": 1696.5, "hw": "unclassified"}, {"u": 33, "v": 49, "len": 3815.4, "hw": "track"}, {"u": 34, "v": 35, "len": 3405.7, "hw": "unclassified"}, {"u": 34, "v": 50, "len": 4508.3, "hw": "tertiary"}, {"u": 35, "v": 36, "len": 2708.5, "hw": "track"}, {"u": 35, "v": 51, "len": 3859.6, "hw": "residential"}, {"u": 36, "v": 37, "len": 4018.1, "hw": "unclassified"}, {"u": 36, "v": 52, "len": 3697.0, "hw": "residential"}, {"u": 37, "v": 38, "len": 2437.7, "hw": "residential"}, {"u": 37, "v": 53, "len": 2789.5, "hw": "trunk"}, {"u": 38, "v": 39, "len": 3351.3, "hw": "residential"}, {"u": 38, "v": 54, "len": 4272.3, "hw": "residential"}, {"u": 39, "v": 40, "len": 2275.0, "hw": "residential"}, {"u": 39, "v": 55, "len": 3307.5, "hw": "unclassified"}, {"u": 39, "v": 56, "len": 4524.8, "hw": "track"}, {"u": 40, "v": 41, "len": 4071.1, "hw": "secondary"}, {"u": 40, "v": 56, "len": 3448.5, "hw": "secondary"}, {"u": 40, "v": 57, "len": 4916.1, "hw": "track"}, {"u": 41, "v": 42, "len": 2498.3, "hw": "unclassified"}, {"u": 41, "v": 57, "len": 4186.5, "hw": "residential"}, {"u": 42, "v": 43, "len": 2705.2, "hw": "residential"}, {"u": 42, "v": 58, "len": 4680.5, "hw": "trunk"}, {"u": 43, "v": 44, "len": 3664.5, "hw": "tertiary"}, {"u": 43, "v": 59, "len": 2804.3, "hw": "track"}, {"u": 44, "v": 45, "len": 3482.7, "hw": "residential"}, {"u": 44, "v": 60, "len": 4946.7, "hw": "tertiary"}, {"u": 45, "v": 46, "len": 3250.2, "hw": "secondary"}, {"u": 45, "v": 61, "len": 3317.9, "hw": "secondary"}, {"u": 46, "v": 47, "len": 2146.1, "hw": "track"}, {"u": 46, "v": 62, "len": 4170.6, "hw": "residential"}, {"u": 47, "v": 63, "len": 2545.8, "hw": "residential"}, {"u": 48, "v": 49, "len": 2710.2, "hw": "track"}, {"u": 48, "v": 64, "len": 3450.9, "hw": "tertiary"}, {"u": 49, "v": 50, "len": 2791.9, "hw": "secondary"}, {"u": 49, "v": 65, "len": 3399.8, "hw": "unclassified"}, {"u": 50, "v": 51, "len": 2748.4, "hw": "unclassified"}, {"u": 50, "v": 66, "len": 4063.7, "hw": "residential"}, {"u": 51, "v": 52, "len": 3475.8, "hw": "secondary"}, {"u": 51, "v": 67, "len": 4505.5, "hw": "tertiary"}, {"u": 52, "v": 53, "len": 3062.1, "hw": "secondary"}, {"u": 52, "v": 68, "len": 4646.4, "hw": "secondary"}, {"u": 53, "v": 54, "len": 2413.8, "hw": "track"}, {"u": 53, "v": 69, "len": 4243.3, "hw": "trunk"}, {"u": 54, "v": 55, "len": 3746.8, "hw": "track"}, {"u": 54, "v": 70, "len": 3562.1, "hw": "unclassified"}, {"u": 54, "v": 71, "len": 5715.2, "hw": "track"}, {"u": 55, "v": 56, "len": 2866.6, "hw": "unclassified"}, {"u": 55, "v": 71, "len": 4847.8, "hw": "tertiary"}, {"u": 56, "v": 57, "len": 2163.0, "hw": "residential"}, {"u": 56, "v": 72, "len": 3799.6, "hw": "residential"}, {"u": 57, "v": 58, "len": 3422.5, "hw": "tertiary"}, {"u": 57, "v": 73, "len": 4345.1, "hw": "secondary"}, {"u": 57, "v": 74, "len": 4684.4, "hw": "track"}, {"u": 58, "v": 59, "len": 3006.5, "hw": "secondary"}, {"u": 58, "v": 74, "len": 3201.5, "hw": "trunk"}, {"u": 59, "v": 60, "len": 3075.1, "hw": "residential"}, {"u": 59, "v": 75, "len": 4094.0, "hw": "residential"}, {"u": 60, "v": 61, "len": 3142.2, "hw": "secondary"}, {"u": 60, "v": 76, "len": 3102.4, "hw": "secondary"}, {"u": 61, "v": 62, "len": 3083.4, "hw": "tertiary"}, {"u": 61, "v": 77, "len": 4886.4, "hw": "unclassified"}, {"u": 62, "v": 63, "len": 2086.2, "hw": "residential"}, {"u": 62, "v": 78, "len": 3434.2, "hw": "tertiary"}, {"u": 63, "v": 79, "len": 3887.9, "hw": "tertiary"}, {"u": 64, "v": 65, "len": 2811.4, "hw": "residential"}, {"u": 64, "v": 80, "len": 3744.9, "hw": "track"}, {"u": 65, "v": 66, "len": 3283.2, "hw": "secondary"}, {"u": 65, "v": 81, "len": 5128.9, "hw": "unclassified"}, {"u": 66, "v": 67, "len": 3452.9, "hw": "secondary"}, {"u": 66, "v": 82, "len": 2523.1, "hw": "residential"}, {"u": 67, "v": 68, "len": 3257.1, "hw": "tertiary"}, {"u": 67, "v": 83, "len": 3595.2, "hw": "secondary"}, {"u": 68, "v": 69, "len": 2931.2, "hw": "residential"}, {"u": 68, "v": 84, "len": 3312.7, "hw": "track"}, {"u": 69, "v": 70, "len": 2412.4, "hw": "secondary"}, {"u": 69, "v": 85, "len": 4541.4, "hw": "primary"}, {"u": 70, "v": 71, "len": 3775.3, "hw": "residential"}, {"u": 70, "v": 86, "len": 3562.4, "hw": "residential"}, {"u": 71, "v": 72, "len": 2609.7, "hw": "tertiary"}, {"u": 71, "v": 87, "len": 2662.3, "hw": "tertiary"}, {"u": 72, "v": 73, "len": 3148.3, "hw": "unclassified"}, {"u": 72, "v": 88, "len": 4685.7, "hw": "track"}, {"u": 73, "v": 74, "len": 3525.5, "hw": "unclassified"}, {"u": 73, "v": 89, "len": 3763.4, "hw": "secondary"}, {"u": 74, "v": 75, "len": 2873.3, "hw": "tertiary"}, {"u": 74, "v": 90, "len": 4918.6, "hw": "trunk"}, {"u": 75, "v": 76, "len": 3239.2, "hw": "secondary"}, {"u": 75, "v": 91, "len": 4041.7, "hw": "residential"}, {"u": 75, "v": 92, "len": 4957.7, "hw": "track"}, {"u": 76, "v": 77, "len": 2618.6, "hw": "tertiary"}, {"u": 76, "v": 92, "len": 3929.1, "hw": "unclassified"}, {"u": 77, "v": 78, "len": 3622.1, "hw": "unclassified"}, {"u": 77, "v": 93, "len": 3304.6, "hw": "tertiary"}, {"u": 78, "v": 79, "len": 2284.9, "hw": "residential"}, {"u": 78, "v": 94, "len": 3957.3, "hw": "residential"}, {"u": 78, "v": 95, "len": 4644.7, "hw": "track"}, {"u": 79, "v": 95, "len": 4147.2, "hw": "tertiary"}, {"u": 80, "v": 81, "len": 2978.5, "hw": "residential"}, {"u": 80, "v": 96, "len": 3825.0, "hw": "unclassified"}, {"u": 80, "v": 97, "len": 5939.8, "hw": "track"}, {"u": 81, "v": 82, "len": 3301.1, "hw": "residential"}, {"u": 81, "v": 97, "len": 3724.0, "hw": "secondary"}, {"u": 82, "v": 83, "len": 2944.4, "hw": "residential"}, {"u": 82, "v": 98, "len": 5374.1, "hw": "unclassified"}, {"u": 83, "v": 84, "len": 3444.9, "hw": "tertiary"}, {"u": 83, "v": 99, "len": 4246.6, "hw": "tertiary"}, {"u": 84, "v": 85, "len": 2743.9, "hw": "track"}, {"u": 84, "v": 100, "len": 3127.6, "hw": "residential"}, {"u": 85, "v": 86, "len": 2653.0, "hw": "track"}, {"u": 85, "v": 101, "len": 2247.0, "hw": "primary"}, {"u": 86, "v": 87, "len": 2868.3, "hw": "residential"}, {"u": 86, "v": 102, "len": 4932.6, "hw": "track"}, {"u": 87, "v": 88, "len": 3061.4, "hw": "tertiary"}, {"u": 87, "v": 103, "len": 4128.1, "hw": "track"}, {"u": 88, "v": 89, "len": 2966.6, "hw": "tertiary"}, {"u": 88, "v": 104, "len": 3854.6, "hw": "unclassified"}, {"u": 89, "v": 90, "len": 2718.7, "hw": "secondary"}, {"u": 89, "v": 105, "len": 3219.3, "hw": "residential"}, {"u": 90, "v": 91, "len": 3000.2, "hw": "residential"}, {"u": 90, "v": 106, "len": 3563.9, "hw": "trunk"}, {"u": 91, "v": 92, "len": 3887.7, "hw": "residential"}, {"u": 91, "v": 107, "len": 3857.9, "hw": "track"}, {"u": 92, "v": 93, "len": 2647.5, "hw": "track"}, {"u": 92, "v": 108, "len": 3838.6, "hw": "tertiary"}, {"u": 93, "v": 94, "len": 3074.0, "hw": "secondary"}, {"u": 93, "v": 109, "len": 4332.5, "hw": "track"}, {"u": 94, "v": 95, "len": 2757.1, "hw": "unclassified"}, {"u": 94, "v": 110, "len": 3414.8, "hw": "residential"}, {"u": 95, "v": 111, "len": 3422.1, "hw": "residential"}, {"u": 96, "v": 97, "len": 3928.5, "hw": "tertiary"}, {"u": 96, "v": 112, "len": 4982.1, "hw": "residential"}, {"u": 97, "v": 98, "len": 2354.6, "hw": "unclassified"}, {"u": 97, "v": 113, "len": 2725.0, "hw": "residential"}, {"u": 98, "v": 99, "len": 2922.6, "hw": "residential"}, {"u": 98, "v": 114, "len": 3770.2, "hw": "residential"}, {"u": 99, "v": 100, "len": 3611.3, "hw": "track"}, {"u": 99, "v": 115, "len": 4156.0, "hw": "secondary"}, {"u": 100, "v": 101, "len": 2962.4, "hw": "unclassified"}, {"u": 100, "v": 116, "len": 4382.8, "hw": "secondary"}, {"u": 101, "v": 102, "len": 2839.9, "hw": "track"}, {"u": 101, "v": 117, "len": 5231.9, "hw": "primary"}, {"u": 102, "v": 103, "len": 3005.0, "hw": "tertiary"}, {"u": 102, "v": 118, "len": 2560.8, "hw": "unclassified"}, {"u": 103, "v": 104, "len": 2904.9, "hw": "unclassified"}, {"u": 103, "v": 119, "len": 3901.5, "hw": "track"}, {"u": 104, "v": 105, "len": 3215.3, "hw": "track"}, {"u": 104, "v": 120, "len": 2848.0, "hw": "unclassified"}, {"u": 105, "v": 106, "len": 3132.0, "hw": "residential"}, {"u": 105, "v": 121, "len": 4435.2, "hw": "residential"}, {"u": 106, "v": 107, "len": 2410.5, "hw": "unclassified"}, {"u": 106, "v": 122, "len": 3403.9, "hw": "primary"}, {"u": 107, "v": 108, "len": 3850.5, "hw": "unclassified"}, {"u": 107, "v": 123, "len": 3404.7, "hw": "residential"}, {"u": 108, "v": 109, "len": 2402.7, "hw": "tertiary"}, {"u": 108, "v": 124, "len": 4624.4, "hw": "tertiary"}, {"u": 109, "v": 110, "len": 3645.5, "hw": "track"}, {"u": 109, "v": 125, "len": 2541.1, "hw": "secondary"}, {"u": 110, "v": 111, "len": 2943.9, "hw": "track"}, {"u": 110, "v": 126, "len": 4275.2, "hw": "residential"}, {"u": 111, "v": 127, "len": 4073.5, "hw": "residential"}, {"u": 112, "v": 113, "len": 4244.8, "hw": "motorway"}, {"u": 112, "v": 128, "len": 3379.5, "hw": "tertiary"}, {"u": 113, "v": 114, "len": 2695.2, "hw": "motorway"}, {"u": 113, "v": 129, "len": 4824.0, "hw": "residential"}, {"u": 114, "v": 115, "len": 2835.3, "hw": "motorway"}, {"u": 114, "v": 130, "len": 2959.8, "hw": "residential"}, {"u": 115, "v": 116, "len": 3557.6, "hw": "motorway"}, {"u": 115, "v": 131, "len": 3720.8, "hw": "unclassified"}, {"u": 116, "v": 117, "len": 2514.4, "hw": "motorway"}, {"u": 116, "v": 132, "len": 2974.9, "hw": "residential"}, {"u": 117, "v": 118, "len": 2877.2, "hw": "motorway"}, {"u": 117, "v": 133, "len": 3079.7, "hw": "primary"}, {"u": 118, "v": 119, "len": 3074.5, "hw": "motorway"}, {"u": 118, "v": 134, "len": 4040.8, "hw": "secondary"}, {"u": 119, "v": 120, "len": 2761.3, "hw": "motorway"}, {"u": 119, "v": 135, "len": 2965.4, "hw": "secondary"}, {"u": 120, "v": 121, "len": 3766.4, "hw": "motorway"}, {"u": 120, "v": 136, "len": 4510.3, "hw": "secondary"}, {"u": 121, "v": 122, "len": 3309.7, "hw": "motorway"}, {"u": 121, "v": 137, "len": 3140.5, "hw": "track"}, {"u": 122, "v": 123, "len": 2458.6, "hw": "motorway"}, {"u": 122, "v": 138, "len": 3677.9, "hw": "primary"}, {"u": 123, "v": 124, "len": 2418.8, "hw": "motorway"}, {"u": 123, "v": 139, "len": 3647.6, "hw": "tertiary"}, {"u": 124, "v": 125, "len": 3259.1, "hw": "motorway"}, {"u": 124, "v": 140, "len": 3541.8, "hw": "tertiary"}, {"u": 125, "v": 126, "len": 3721.5, "hw": "motorway"}, {"u": 125, "v": 141, "len": 3639.9, "hw": "secondary"}, {"u": 126, "v": 127, "len": 3367.9, "hw": "motorway"}, {"u": 126, "v": 142, "len": 3888.7, "hw": "secondary"}, {"u": 127, "v": 143, "len": 4640.4, "hw": "residential"}, {"u": 128, "v": 129, "len": 3711.8, "hw": "tertiary"}, {"u": 128, "v": 144, "len": 3581.8, "hw": "residential"}, {"u": 128, "v": 145, "len": 4854.0, "hw": "track"}, {"u": 129, "v": 130, "len": 3253.1, "hw": "secondary"}, {"u": 129, "v": 145, "len": 3042.6, "hw": "residential"}, {"u": 130, "v": 131, "len": 2029.0, "hw": "tertiary"}, {"u": 130, "v": 146, "len": 3108.6, "hw": "tertiary"}, {"u": 131, "v": 132, "len": 3602.2, "hw": "unclassified"}, {"u": 131, "v": 147, "len": 2844.4, "hw": "unclassified"}, {"u": 132, "v": 133, "len": 3506.8, "hw": "unclassified"}, {"u": 132, "v": 148, "len": 4946.4, "hw": "tertiary"}, {"u": 132, "v": 149, "len": 4715.0, "hw": "track"}, {"u": 133, "v": 134, "len": 2173.0, "hw": "residential"}, {"u": 133, "v": 149, "len": 3472.8, "hw": "trunk"}, {"u": 134, "v": 135, "len": 3093.2, "hw": "secondary"}, {"u": 134, "v": 150, "len": 4388.1, "hw": "secondary"}, {"u": 135, "v": 136, "len": 3188.5, "hw": "secondary"}, {"u": 135, "v": 151, "len": 4068.8, "hw": "unclassified"}, {"u": 136, "v": 137, "len": 3711.5, "hw": "unclassified"}, {"u": 136, "v": 152, "len": 4131.6, "hw": "residential"}, {"u": 137, "v": 138, "len": 2760.2, "hw": "track"}, {"u": 137, "v": 153, "len": 4416.9, "hw": "tertiary"}, {"u": 138, "v": 139, "len": 2100.8, "hw": "unclassified"}, {"u": 138, "v": 154, "len": 4006.6, "hw": "trunk"}, {"u": 139, "v": 140, "len": 3311.3, "hw": "tertiary"}, {"u": 139, "v": 155, "len": 4526.3, "hw": "track"}, {"u": 140, "v": 141, "len": 3215.2, "hw": "secondary"}, {"u": 140, "v": 156, "len": 3745.3, "hw": "track"}, {"u": 141, "v": 142, "len": 3512.2, "hw": "unclassified"}, {"u": 141, "v": 157, "len": 4676.9, "hw": "secondary"}, {"u": 142, "v": 143, "len": 2469.3, "hw": "tertiary"}, {"u": 142, "v": 158, "len": 4154.9, "hw": "tertiary"}, {"u": 143, "v": 159, "len": 3710.2, "hw": "track"}, {"u": 144, "v": 145, "len": 3434.7, "hw": "tertiary"}, {"u": 144, "v": 160, "len": 3950.4, "hw": "tertiary"}, {"u": 144, "v": 161, "len": 5133.6, "hw": "track"}, {"u": 145, "v": 146, "len": 3339.2, "hw": "unclassified"}, {"u": 145, "v": 161, "len": 3623.7, "hw": "unclassified"}, {"u": 146, "v": 147, "len": 2264.3, "hw": "tertiary"}, {"u": 146, "v": 162, "len": 4498.1, "hw": "track"}, {"u": 147, "v": 148, "len": 3369.5, "hw": "residential"}, {"u": 147, "v": 163, "len": 4519.5, "hw": "unclassified"}, {"u": 148, "v": 149, "len": 2828.4, "hw": "residential"}, {"u": 148, "v": 164, "len": 2635.3, "hw": "unclassified"}, {"u": 149, "v": 150, "len": 3043.2, "hw": "residential"}, {"u": 149, "v": 165, "len": 3891.5, "hw": "trunk"}, {"u": 150, "v": 151, "len": 3700.6, "hw": "tertiary"}, {"u": 150, "v": 166, "len": 2784.9, "hw": "residential"}, {"u": 151, "v": 152, "len": 2747.3, "hw": "residential"}, {"u": 151, "v": 167, "len": 4009.4, "hw": "secondary"}, {"u": 152, "v": 153, "len": 2482.0, "hw": "track"}, {"u": 152, "v": 168, "len": 3763.2, "hw": "residential"}, {"u": 153, "v": 154, "len": 4124.9, "hw": "residential"}, {"u": 153, "v": 169, "len": 3654.4, "hw": "tertiary"}, {"u": 154, "v": 155, "len": 2760.9, "hw": "tertiary"}, {"u": 154, "v": 170, "len": 3045.7, "hw": "trunk"}, {"u": 155, "v": 156, "len": 2017.8, "hw": "residential"}, {"u": 155, "v": 171, "len": 2917.9, "hw": "tertiary"}, {"u": 155, "v": 172, "len": 4418.6, "hw": "track"}, {"u": 156, "v": 157, "len": 3688.9, "hw": "tertiary"}, {"u": 156, "v": 172, "len": 3615.9, "hw": "secondary"}, {"u": 157, "v": 158, "len": 3319.4, "hw": "unclassified"}, {"u": 157, "v": 173, "len": 4408.4, "hw": "unclassified"}, {"u": 158, "v": 159, "len": 2198.1, "hw": "tertiary"}, {"u": 158, "v": 174, "len": 3452.6, "hw": "track"}, {"u": 159, "v": 175, "len": 3424.5, "hw": "unclassified"}, {"u": 160, "v": 161, "len": 3544.5, "hw": "tertiary"}, {"u": 160, "v": 176, "len": 3588.0, "hw": "tertiary"}, {"u": 161, "v": 162, "len": 2791.7, "hw": "residential"}, {"u": 161, "v": 177, "len": 4432.4, "hw": "unclassified"}, {"u": 162, "v": 163, "len": 2360.9, "hw": "unclassified"}, {"u": 162, "v": 178, "len": 2901.1, "hw": "track"}, {"u": 163, "v": 164, "len": 3513.6, "hw": "tertiary"}, {"u": 163, "v": 179, "len": 2550.9, "hw": "secondary"}, {"u": 164, "v": 165, "len": 3081.0, "hw": "residential"}, {"u": 164, "v": 180, "len": 3639.4, "hw": "unclassified"}, {"u": 165, "v": 166, "len": 2218.8, "hw": "secondary"}, {"u": 165, "v": 181, "len": 4787.2, "hw": "trunk"}, {"u": 166, "v": 167, "len": 3673.7, "hw": "residential"}, {"u": 166, "v": 182, "len": 4700.6, "hw": "unclassified"}, {"u": 167, "v": 168, "len": 2190.0, "hw": "unclassified"}, {"u": 167, "v": 183, "len": 4473.7, "hw": "track"}, {"u": 167, "v": 184, "len": 4950.3, "hw": "track"}, {"u": 168, "v": 169, "len": 3655.2, "hw": "residential"}, {"u": 168, "v": 184, "len": 3470.9, "hw": "unclassified"}, {"u": 168, "v": 185, "len": 4997.3, "hw": "track"}, {"u": 169, "v": 170, "len": 2753.6, "hw": "unclassified"}, {"u": 169, "v": 185, "len": 4040.3, "hw": "secondary"}, {"u": 170, "v": 171, "len": 2766.4, "hw": "secondary"}, {"u": 170, "v": 186, "len": 4246.1, "hw": "primary"}, {"u": 171, "v": 172, "len": 3585.9, "hw": "track"}, {"u": 171, "v": 187, "len": 4492.1, "hw": "residential"}, {"u": 172, "v": 173, "len": 3265.1, "hw": "secondary"}, {"u": 172, "v": 188, "len": 3191.7, "hw": "secondary"}, {"u": 173, "v": 174, "len": 3248.4, "hw": "tertiary"}, {"u": 173, "v": 189, "len": 3770.1, "hw": "secondary"}, {"u": 173, "v": 190, "len": 4909.2, "hw": "track"}, {"u": 174, "v": 175, "len": 2348.4, "hw": "tertiary"}, {"u": 174, "v": 190, "len": 4222.8, "hw": "residential"}, {"u": 175, "v": 191, "len": 3780.4, "hw": "secondary"}, {"u": 176, "v": 177, "len": 3472.0, "hw": "residential"}, {"u": 176, "v": 192, "len": 4205.2, "hw": "tertiary"}, {"u": 177, "v": 178, "len": 3086.7, "hw": "track"}, {"u": 177, "v": 193, "len": 3328.8, "hw": "residential"}, {"u": 178, "v": 179, "len": 3454.9, "hw": "tertiary"}, {"u": 178, "v": 194, "len": 3959.0, "hw": "residential"}, {"u": 179, "v": 180, "len": 1838.0, "hw": "secondary"}, {"u": 179, "v": 195, "len": 4236.7, "hw": "tertiary"}, {"u": 180, "v": 181, "len": 4036.9, "hw": "unclassified"}, {"u": 180, "v": 196, "len": 4124.8, "hw": "tertiary"}, {"u": 181, "v": 182, "len": 2779.6, "hw": "unclassified"}, {"u": 181, "v": 197, "len": 3436.2, "hw": "trunk"}, {"u": 182, "v": 183, "len": 2455.8, "hw": "residential"}, {"u": 182, "v": 198, "len": 2655.6, "hw": "unclassified"}, {"u": 183, "v": 184, "len": 3188.0, "hw": "tertiary"}, {"u": 183, "v": 199, "len": 4220.1, "hw": "tertiary"}, {"u": 183, "v": 200, "len": 4753.0, "hw": "track"}, {"u": 184, "v": 185, "len": 2857.6, "hw": "tertiary"}, {"u": 184, "v": 200, "len": 2937.0, "hw": "tertiary"}, {"u": 185, "v": 186, "len": 3753.2, "hw": "residential"}, {"u": 185, "v": 201, "len": 4030.6, "hw": "tertiary"}, {"u": 186, "v": 187, "len": 2473.0, "hw": "tertiary"}, {"u": 186, "v": 202, "len": 4243.0, "hw": "trunk"}, {"u": 187, "v": 188, "len": 2910.7, "hw": "residential"}, {"u": 187, "v": 203, "len": 3598.6, "hw": "tertiary"}, {"u": 188, "v": 189, "len": 2731.9, "hw": "secondary"}, {"u": 188, "v": 204, "len": 4609.5, "hw": "residential"}, {"u": 189, "v": 190, "len": 4213.6, "hw": "residential"}, {"u": 189, "v": 205, "len": 2640.4, "hw": "residential"}, {"u": 189, "v": 206, "len": 4875.4, "hw": "track"}, {"u": 190, "v": 191, "len": 2389.9, "hw": "secondary"}, {"u": 190, "v": 206, "len": 3750.7, "hw": "unclassified"}, {"u": 190, "v": 207, "len": 3670.4, "hw": "track"}, {"u": 191, "v": 207, "len": 3011.1, "hw": "secondary"}, {"u": 192, "v": 193, "len": 3237.8, "hw": "track"}, {"u": 192, "v": 208, "len": 2599.0, "hw": "unclassified"}, {"u": 193, "v": 194, "len": 3133.4, "hw": "unclassified"}, {"u": 193, "v": 209, "len": 3709.0, "hw": "tertiary"}, {"u": 194, "v": 195, "len": 2227.5, "hw": "residential"}, {"u": 194, "v": 210, "len": 4954.6, "hw": "unclassified"}, {"u": 195, "v": 196, "len": 2732.0, "hw": "secondary"}, {"u": 195, "v": 211, "len": 4645.1, "hw": "secondary"}, {"u": 196, "v": 197, "len": 3207.8, "hw": "secondary"}, {"u": 196, "v": 212, "len": 3803.8, "hw": "unclassified"}, {"u": 197, "v": 198, "len": 2936.5, "hw": "residential"}, {"u": 197, "v": 213, "len": 3379.0, "hw": "primary"}, {"u": 198, "v": 199, "len": 4099.8, "hw": "unclassified"}, {"u": 198, "v": 214, "len": 3935.6, "hw": "tertiary"}, {"u": 198, "v": 215, "len": 5748.1, "hw": "track"}, {"u": 199, "v": 200, "len": 3359.0, "hw": "residential"}, {"u": 199, "v": 215, "len": 3100.6, "hw": "residential"}, {"u": 199, "v": 216, "len": 4598.7, "hw": "track"}, {"u": 200, "v": 201, "len": 3273.8, "hw": "residential"}, {"u": 200, "v": 216, "len": 5046.4, "hw": "tertiary"}, {"u": 201, "v": 202, "len": 2778.3, "hw": "residential"}, {"u": 201, "v": 217, "len": 2776.5, "hw": "tertiary"}, {"u": 202, "v": 203, "len": 2832.5, "hw": "tertiary"}, {"u": 202, "v": 218, "len": 4357.9, "hw": "trunk"}, {"u": 203, "v": 204, "len": 2861.1, "hw": "residential"}, {"u": 203, "v": 219, "len": 4034.7, "hw": "secondary"}, {"u": 204, "v": 205, "len": 2569.5, "hw": "residential"}, {"u": 204, "v": 220, "len": 3827.7, "hw": "residential"}, {"u": 205, "v": 206, "len": 3228.5, "hw": "unclassified"}, {"u": 205, "v": 221, "len": 4253.8, "hw": "secondary"}, {"u": 206, "v": 207, "len": 3746.7, "hw": "residential"}, {"u": 206, "v": 222, "len": 2843.0, "hw": "tertiary"}, {"u": 207, "v": 223, "len": 3950.0, "hw": "residential"}, {"u": 208, "v": 209, "len": 3432.1, "hw": "secondary"}, {"u": 209, "v": 210, "len": 2286.1, "hw": "residential"}, {"u": 210, "v": 211, "len": 3812.3, "hw": "residential"}, {"u": 211, "v": 212, "len": 2156.4, "hw": "residential"}, {"u": 212, "v": 213, "len": 2995.1, "hw": "tertiary"}, {"u": 213, "v": 214, "len": 3266.6, "hw": "residential"}, {"u": 214, "v": 215, "len": 3064.4, "hw": "secondary"}, {"u": 215, "v": 216, "len": 3265.0, "hw": "residential"}, {"u": 216, "v": 217, "len": 2738.9, "hw": "residential"}, {"u": 217, "v": 218, "len": 2903.6, "hw": "secondary"}, {"u": 218, "v": 219, "len": 3545.0, "hw": "track"}, {"u": 219, "v": 220, "len": 2730.2, "hw": "unclassified"}, {"u": 220, "v": 221, "len": 2360.9, "hw": "residential"}, {"u": 221, "v": 222, "len": 3333.2, "hw": "residential"}, {"u": 222, "v": 223, "len": 2768.2, "hw": "unclassified"}], "terminals": [51, 60, 89, 126, 132, 173, 177, 200], "classOrder": ["motorway", "trunk", "primary", "secondary", "tertiary", "residential", "unclassified", "track"], "species": {"white_tailed_deer": {"label": "White-tailed deer", "res": {"motorway": 10.0, "trunk": 8.0, "primary": 4.0, "secondary": 2.5, "tertiary": 1.5, "residential": 1.2, "unclassified": 1.1, "track": 1.0}, "default": 1.3}, "eastern_box_turtle": {"label": "Eastern box turtle", "res": {"motorway": 50.0, "trunk": 40.0, "primary": 25.0, "secondary": 15.0, "tertiary": 8.0, "residential": 5.0, "unclassified": 4.0, "track": 2.0}, "default": 6.0}, "meadow_vole": {"label": "Meadow vole", "res": {"motorway": 30.0, "trunk": 25.0, "primary": 18.0, "secondary": 12.0, "tertiary": 7.0, "residential": 4.0, "unclassified": 3.0, "track": 1.5}, "default": 4.0}}, "patch_names": {"51": "Kickapoo Prairie Remnant", "60": "Embarras Headwaters", "89": "Buffalo Trace Savanna", "126": "Homer Lake Margin", "132": "Lake of the Woods", "173": "Salt Fork Wetland", "177": "Sangamon River Woods", "200": "Phillippe Prairie"}}</script>
+<script>
+function makeSolver(D){
+  const N = D.nodes.length;
+  const E = D.edges;
+  const adj = Array.from({length:N}, ()=>[]);
+  const ekey = {};
+  E.forEach((e,i)=>{ adj[e.u].push([e.v,i]); adj[e.v].push([e.u,i]);
+                     ekey[Math.min(e.u,e.v)+"_"+Math.max(e.u,e.v)] = i; });
+  const terminals = D.terminals.slice();
+  const root = terminals[0];
+
+  function weightArray(multFn){
+    const W = new Float64Array(E.length);
+    for(let i=0;i<E.length;i++) W[i] = E[i].len * multFn(E[i].hw);
+    return W;
+  }
+  function dijkstra(src, W){
+    const dist = new Float64Array(N).fill(Infinity);
+    const prev = new Int32Array(N).fill(-1);
+    const done = new Uint8Array(N);
+    dist[src] = 0;
+    for(let it=0; it<N; it++){
+      let u=-1, best=Infinity;
+      for(let i=0;i<N;i++) if(!done[i] && dist[i]<best){ best=dist[i]; u=i; }
+      if(u<0) break;
+      done[u]=1;
+      const au = adj[u];
+      for(let a=0;a<au.length;a++){ const v=au[a][0], w=W[au[a][1]];
+        const nd = dist[u]+w; if(nd < dist[v]){ dist[v]=nd; prev[v]=u; } }
+    }
+    return {dist, prev};
+  }
+  function computeSP(ts, W){ const SP={}; for(const t of ts) SP[t]=dijkstra(t,W); return SP; }
+
+  function find(parent,x){ while(parent[x]!==x){ parent[x]=parent[parent[x]]; x=parent[x]; } return x; }
+
+  // Kou heuristic restricted to a subset of terminals (root should be included).
+  function kou(subset, W, SP){
+    if(subset.length===1) return {edges:[], cost:0, cind:0, cunion:0};
+    // 1-2: metric-closure MST (Kruskal) over the subset.
+    const ce=[];
+    for(let i=0;i<subset.length;i++) for(let j=i+1;j<subset.length;j++){
+      ce.push([SP[subset[i]].dist[subset[j]], subset[i], subset[j]]);
+    }
+    ce.sort((a,b)=>a[0]-b[0]);
+    const par={}; subset.forEach(t=>par[t]=t);
+    const closureEdges=[]; let cind=0;
+    for(const [d,a,b] of ce){ const ra=find(par,a), rb=find(par,b);
+      if(ra!==rb){ par[ra]=rb; closureEdges.push([a,b]); cind+=d; } }
+    // 3: expand each closure edge to its shortest path -> subgraph edge set.
+    const sub = new Map();  // "u_v" -> weight
+    for(const [a,b] of closureEdges){
+      const prev = SP[a].prev; let cur=b;
+      while(cur!==a && cur!==-1){ const p=prev[cur];
+        const k=Math.min(cur,p)+"_"+Math.max(cur,p);
+        sub.set(k, W[ekey[k]]); cur=p; }
+    }
+    // C_union: the expanded union of those shortest paths, each edge counted once.
+    let cunion=0; sub.forEach(w=>cunion+=w);
+    // 4: MST of the subgraph (Kruskal).
+    const se=[...sub.entries()].map(([k,w])=>{ const [u,v]=k.split("_").map(Number); return [w,u,v]; });
+    se.sort((a,b)=>a[0]-b[0]);
+    const par2={}; const nodeset=new Set();
+    se.forEach(([w,u,v])=>{ nodeset.add(u); nodeset.add(v); });
+    nodeset.forEach(n=>par2[n]=n);
+    const tree=[];
+    for(const [w,u,v] of se){ const ru=find(par2,u), rv=find(par2,v);
+      if(ru!==rv){ par2[ru]=rv; tree.push([u,v,w]); } }
+    // 5: prune non-terminal leaves.
+    const term=new Set(subset);
+    const deg={}, inc={};
+    tree.forEach(([u,v])=>{ deg[u]=(deg[u]||0)+1; deg[v]=(deg[v]||0)+1; });
+    let keep = tree.slice();
+    let changed=true;
+    while(changed){
+      changed=false;
+      const d={}; keep.forEach(([u,v])=>{ d[u]=(d[u]||0)+1; d[v]=(d[v]||0)+1; });
+      const drop=new Set();
+      for(const n in d){ if(d[n]===1 && !term.has(+n)) drop.add(+n); }
+      if(drop.size){ keep = keep.filter(([u,v])=>!drop.has(u)&&!drop.has(v)); changed=true; }
+    }
+    let cost=0; keep.forEach(([u,v,w])=>cost+=w);
+    return {edges: keep.map(([u,v])=>[u,v]), cost, cind, cunion};
+  }
+
+  // WHICH p patches to serve is part of the budget problem, not a given.  The
+  // exact model (corridor_budget.py) optimizes over subsets, and its optima are
+  // NOT nested in p.  A greedy nearest-patch order is therefore the wrong answer
+  // twice over: it fixes a nested sequence, and on the frozen data it picks a
+  // different subset from the exact model at p = 5, 6, 7.  We instead search all
+  // subsets of size p containing the root and keep the cheapest heuristic tree.
+  // That leaves only the heuristic-vs-exact gap, which is the honest one to show.
+  // The search is 2^(|T|-1) trees in total; above EXHAUSTIVE_MAX terminals we
+  // fall back to the greedy order and say so.
+  const EXHAUSTIVE_MAX = 13;
+
+  function greedyOrder(SP){
+    const order=[root]; const inset=new Set([root]);
+    while(order.length < terminals.length){
+      let best=-1, bd=Infinity;
+      for(const t of terminals){ if(inset.has(t)) continue;
+        let d=Infinity; for(const c of order){ const dc=SP[c].dist[t]; if(dc<d) d=dc; }
+        if(d<bd){ bd=d; best=t; } }
+      order.push(best); inset.add(best);
+    }
+    return order;
+  }
+  const exhaustive = () => terminals.length <= EXHAUSTIVE_MAX;
+
+  // Cheapest heuristic tree over all size-p subsets containing the root.
+  function bestSubset(p, W, SP){
+    const others = terminals.filter(t=>t!==root);
+    if(!exhaustive()){
+      const sub = greedyOrder(SP).slice(0,p);
+      const r = kou(sub, W, SP);
+      return {r, served:sub, searched:false};
+    }
+    let bestR=null, bestSub=null;
+    const m = others.length, want = p-1;
+    for(let mask=0; mask < (1<<m); mask++){
+      let bits=0, x=mask; while(x){ bits += x&1; x>>=1; }
+      if(bits!==want) continue;
+      const sub=[root];
+      for(let i=0;i<m;i++) if(mask&(1<<i)) sub.push(others[i]);
+      const r = kou(sub, W, SP);
+      if(bestR===null || r.cost < bestR.cost-1e-9){ bestR=r; bestSub=sub; }
+    }
+    return {r:bestR, served:bestSub, searched:true};
+  }
+
+  // Solve the corridor connecting the cheapest p patches under weights multFn.
+  function solveAtP(multFn, p){
+    const W = weightArray(multFn);
+    const SP = computeSP(terminals, W);
+    const b = bestSubset(p, W, SP);
+    return {edges:b.r.edges, cost:b.r.cost, cind:b.r.cind, cunion:b.r.cunion,
+            served:b.served, searched:b.searched};
+  }
+  // Full frontier: cost + served for every p (reuses one SP computation).
+  function frontier(multFn){
+    const W = weightArray(multFn);
+    const SP = computeSP(terminals, W);
+    const rows=[];
+    for(let p=2;p<=terminals.length;p++){
+      const b = bestSubset(p, W, SP);
+      rows.push({p, cost:b.r.cost, cind:b.r.cind, cunion:b.r.cunion,
+                 served:b.served, edges:b.r.edges, searched:b.searched});
+    }
+    return rows;
+  }
+
+  // Gaussian (Box-Muller) with a small seeded RNG for reproducibility.
+  function makeRng(seed){ let s=seed>>>0 || 1;
+    return ()=>{ s^=s<<13; s^=s>>>17; s^=s<<5; s>>>=0; return s/4294967296; }; }
+  function gauss(rng){ const u=Math.max(1e-9,rng()), v=rng();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+  // Consensus: N perturbed re-solves at budget level p for a base multiplier map.
+  // baseMult: {classOrder... , __default}. Returns Map "u_v"->frequency.
+  function consensus(baseMult, p, N, sigma, seed){
+    const rng = makeRng(seed||12345);
+    const tally = new Map();
+    for(let d=0; d<N; d++){
+      const shocked = {};
+      for(const k in baseMult) shocked[k] = baseMult[k]*Math.exp(sigma*gauss(rng));
+      const multFn = hw => (hw in shocked ? shocked[hw] : shocked.__default);
+      const r = solveAtP(multFn, p);
+      for(const [u,v] of r.edges){ const key=Math.min(u,v)+"_"+Math.max(u,v);
+        tally.set(key,(tally.get(key)||0)+1); }
+    }
+    const freq=new Map(); tally.forEach((c,k)=>freq.set(k,c/N));
+    return freq;
+  }
+  // Combined across species: per-species frequency, then min over species
+  // (a segment is robust for ALL species only if every species keeps it).
+  function combinedConsensus(speciesMults, p, N, sigma, seed){
+    const per = speciesMults.map((m,i)=>consensus(m, p, N, sigma, (seed||1)+i*97));
+    const keys=new Set(); per.forEach(f=>f.forEach((_,k)=>keys.add(k)));
+    const out=new Map();
+    keys.forEach(k=>{ let mn=1; for(const f of per) mn=Math.min(mn, f.get(k)||0); out.set(k,mn); });
+    return out;
+  }
+
+  return {terminals, root, solveAtP, frontier, consensus, combinedConsensus};
+}
+</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const S = makeSolver(D);
+const SVGNS="http://www.w3.org/2000/svg";
+const svg=document.getElementById('svg');
+const W=700,H=560,PAD=30;
+const xs=D.nodes.map(n=>n.x), ys=D.nodes.map(n=>n.y);
+const xmin=Math.min(...xs),xmax=Math.max(...xs),ymin=Math.min(...ys),ymax=Math.max(...ys);
+const pos={};
+D.nodes.forEach(n=>{ pos[n.id]=[PAD+(n.x-xmin)/(xmax-xmin)*(W-2*PAD),
+                               PAD+(1-(n.y-ymin)/(ymax-ymin))*(H-2*PAD)]; });
+const SPCOL={white_tailed_deer:"#2563eb",eastern_box_turtle:"#c0392b",meadow_vole:"#2e7d32"};
+const SPKEYS=Object.keys(D.species);
+
+let state={sp:"eastern_box_turtle", mode:"single", p:8, master:1.0,
+           base:{}, N:400, sigma:0.35, combined:false};
+function resetBase(){ const s=D.species[state.sp];
+  state.base={__default:s.default}; D.classOrder.forEach(c=>state.base[c]=s.res[c]); }
+resetBase();
+// "Road aversion" is an exponent (gamma) on the resistance multipliers: it
+// changes the CONTRAST between road classes, so it actually reroutes the tree.
+// A uniform scalar would leave every relative weight -- and thus the tree --
+// unchanged. gamma=0 -> road type ignored (pure-length tree); 1 -> the species
+// profile; >1 -> big roads penalized more strongly.
+const multFn = ()=> { const g=state.master;
+  return hw => Math.pow((hw in state.base ? state.base[hw] : state.base.__default), g); };
+const baseMultObj = ()=> { const g=state.master, o={__default:Math.pow(state.base.__default,g)};
+  D.classOrder.forEach(c=>o[c]=Math.pow(state.base[c],g)); return o; };
+
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function fmt(n){return Math.round(n).toLocaleString();}
+function baseNet(){ D.edges.forEach(e=>{ const [x1,y1]=pos[e.u],[x2,y2]=pos[e.v];
+  svg.appendChild(el("line",{x1,y1,x2,y2,stroke:"#c9d0da","stroke-width":0.6,"stroke-opacity":0.5})); }); }
+function terms(served){ D.nodes.filter(n=>n.patch).forEach(n=>{ const [x,y]=pos[n.id];
+  const on=served.has(n.id);
+  const c=el("circle",{cx:x,cy:y,r:on?7:5.5,fill:on?"#8B0000":"#fff",stroke:"#8B0000","stroke-width":2});
+  c.appendChild(el("title",{})).textContent=n.name; svg.appendChild(c); }); }
+function shade(f){ const st=[[255,233,168],[245,158,11],[185,28,28]]; const t=Math.max(0,Math.min(1,f));
+  const [a,b,u]=t<0.5?[st[0],st[1],t*2]:[st[1],st[2],(t-0.5)*2];
+  const c=a.map((v,i)=>Math.round(v+(b[i]-v)*u)); return `rgb(${c[0]},${c[1]},${c[2]})`; }
+
+function drawSingle(){
+  const sol=S.solveAtP(multFn(), state.p); const col=SPCOL[state.sp];
+  svg.innerHTML=""; baseNet();
+  sol.edges.forEach(([u,v])=>{ const [x1,y1]=pos[u],[x2,y2]=pos[v];
+    svg.appendChild(el("line",{x1,y1,x2,y2,stroke:col,"stroke-width":3.2,"stroke-linecap":"round"})); });
+  const served=new Set(sol.served); terms(served);
+  document.getElementById('s_cost').textContent=fmt(sol.cost);
+  document.getElementById('s_ind').textContent=fmt(sol.cind);
+  const share = sol.cind>0 ? (sol.cind-sol.cost)/sol.cind : 0;
+  document.getElementById('s_share').textContent=(100*share).toFixed(1)+"%";
+  const cleanup = sol.cunion-sol.cost;
+  document.getElementById('s_clean').textContent =
+      cleanup>0.5 ? fmt(cleanup) : "0 (cleanup removes nothing here)";
+  document.getElementById('s_patches').textContent=`${sol.served.length} / ${D.terminals.length}`;
+  const miss=D.terminals.filter(t=>!served.has(t)).map(t=>D.patch_names[t]);
+  document.getElementById('hint').textContent = (miss.length? `Left out: ${miss.join(", ")}. ` : ``)
+      + `This is the Kou heuristic, not the optimum: on the unedited species profiles the `
+      + `exact program of the module comes in 9\u201312% below this figure.`;
+}
+function drawConsensus(freq){
+  svg.innerHTML=""; baseNet();
+  [...freq.entries()].sort((a,b)=>a[1]-b[1]).forEach(([k,f])=>{
+    const [u,v]=k.split("_").map(Number); const [x1,y1]=pos[u],[x2,y2]=pos[v];
+    svg.appendChild(el("line",{x1,y1,x2,y2,stroke:shade(f),"stroke-width":(0.8+4.4*f),"stroke-linecap":"round"})); });
+  terms(new Set(D.terminals));
+  const vals=[...freq.values()]; const bb=vals.filter(f=>f>=0.9).length;
+  const vol=vals.filter(f=>f<=0.25).length;
+  document.getElementById('r_backbone').textContent=bb;
+  const se = Math.sqrt(0.9*0.1/state.N);
+  document.getElementById('r_hint').textContent=
+    `${vals.length} segments are selected at least once; ${bb} in \u226590% of draws, `
+    + `${vol} in \u226425%. At ${state.N} draws a frequency near 0.9 carries a `
+    + `Monte-Carlo standard error of about ${(100*se).toFixed(1)} points, so the `
+    + `\u226590% count moves between runs.`;
+}
+
+let consTimer=null;
+function runConsensus(){
+  const spin=document.getElementById('spin'); spin.style.display="inline";
+  setTimeout(()=>{ let freq;
+    if(state.combined){ const g=state.master; const mults=SPKEYS.map(k=>{ const s=D.species[k];
+        const o={__default:Math.pow(s.default,g)}; D.classOrder.forEach(c=>o[c]=Math.pow(s.res[c],g)); return o; });
+      freq=S.combinedConsensus(mults, state.p, Math.max(40,Math.round(state.N/2)), state.sigma, 7); }
+    else { freq=S.consensus(baseMultObj(), state.p, state.N, state.sigma, 7); }
+    drawConsensus(freq); spin.style.display="none"; }, 30);
+}
+function redraw(){ if(state.mode==="single") drawSingle();
+  else { clearTimeout(consTimer); consTimer=setTimeout(runConsensus, 250); } }
+
+// ---- controls ----
+function speciesButtons(){ SPKEYS.forEach(k=>{
+  document.querySelector(`[data-sp="${k}"]`).classList.toggle("on",k===state.sp); }); }
+function setSpecies(k){ state.sp=k; resetBase(); speciesButtons(); buildClassSliders(); syncMaster(); redraw(); }
+function setMode(m){ state.mode=m;
+  document.getElementById('mode_single').classList.toggle("on",m==="single");
+  document.getElementById('mode_cons').classList.toggle("on",m==="consensus");
+  document.getElementById('consControls').style.display=m==="consensus"?"":"none";
+  document.getElementById('singleStats').style.display=m==="single"?"":"none";
+  document.getElementById('consStats').style.display=m==="consensus"?"":"none";
+  redraw(); }
+
+function syncMaster(){ document.getElementById('master').value=state.master;
+  document.getElementById('masterVal').textContent=state.master.toFixed(2); }
+function buildClassSliders(){ const box=document.getElementById('classSliders'); box.innerHTML="";
+  const rows=[...D.classOrder,"__default"];
+  rows.forEach(c=>{ const val=state.base[c];
+    const row=document.createElement('div'); row.className="crow";
+    const lab=document.createElement('label'); lab.textContent=(c==="__default"?"other/default":c);
+    const inp=document.createElement('input'); inp.type="range"; inp.min=0; inp.max=60; inp.step=0.5; inp.value=val;
+    const out=document.createElement('span'); out.className="cval"; out.textContent=(+val).toFixed(1);
+    inp.oninput=()=>{ state.base[c]=+inp.value; out.textContent=(+inp.value).toFixed(1); redraw(); };
+    row.appendChild(lab); row.appendChild(inp); row.appendChild(out); box.appendChild(row); }); }
+
+document.querySelectorAll('[data-sp]').forEach(b=>b.onclick=()=>setSpecies(b.dataset.sp));
+document.getElementById('mode_single').onclick=()=>setMode("single");
+document.getElementById('mode_cons').onclick=()=>setMode("consensus");
+document.getElementById('master').oninput=e=>{ state.master=+e.target.value;
+  document.getElementById('masterVal').textContent=state.master.toFixed(2); redraw(); };
+document.getElementById('resetW').onclick=()=>{ resetBase(); state.master=1; syncMaster(); buildClassSliders(); redraw(); };
+document.getElementById('pslider').oninput=e=>{ state.p=+e.target.value;
+  document.getElementById('pval').textContent=state.p; redraw(); };
+document.getElementById('nsel').onchange=e=>{ state.N=+e.target.value; if(state.mode==="consensus") redraw(); };
+document.getElementById('sig').oninput=e=>{ state.sigma=+e.target.value;
+  document.getElementById('sigVal').textContent=state.sigma.toFixed(2); if(state.mode==="consensus") redraw(); };
+document.getElementById('combined').onchange=e=>{ state.combined=e.target.checked; if(state.mode==="consensus") redraw(); };
+
+speciesButtons(); syncMaster(); buildClassSliders(); setMode("single");
+</script>
+</body>
+</html>

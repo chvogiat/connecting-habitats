@@ -1,0 +1,932 @@
+[
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 1,
+    "monotone": true,
+    "spread": 1,
+    "tree": 111346.99999999996,
+    "redundant": 158883.39999999997,
+    "premium": 0.4269212461943297
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 1.5,
+    "monotone": true,
+    "spread": 1.5,
+    "tree": 127656.19907095934,
+    "redundant": 181245.75059001634,
+    "premium": 0.41979591989315423
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 2,
+    "monotone": true,
+    "spread": 2,
+    "tree": 140461.45349748337,
+    "redundant": 197714.73409073713,
+    "premium": 0.40760848736539357
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 3,
+    "monotone": true,
+    "spread": 3,
+    "tree": 158696.09231314342,
+    "redundant": 223903.97608780905,
+    "premium": 0.410897854031564
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 5,
+    "monotone": true,
+    "spread": 5,
+    "tree": 185910.64014859323,
+    "redundant": 263035.79259005905,
+    "premium": 0.4148506636296976
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 8,
+    "monotone": true,
+    "spread": 8,
+    "tree": 212220.73896567806,
+    "redundant": 302114.5922453891,
+    "premium": 0.42358656235877756
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 12,
+    "monotone": true,
+    "spread": 12,
+    "tree": 233187.2551660472,
+    "redundant": 336498.2874537562,
+    "premium": 0.4430389311548937
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 20,
+    "monotone": true,
+    "spread": 20,
+    "tree": 262265.5458180399,
+    "redundant": 385588.42947723134,
+    "premium": 0.4702214439740131
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 35,
+    "monotone": true,
+    "spread": 35,
+    "tree": 298325.6596489643,
+    "redundant": 447648.7869994755,
+    "premium": 0.5005373239640789
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 50,
+    "monotone": true,
+    "spread": 50,
+    "tree": 323753.54362269567,
+    "redundant": 493978.14816729724,
+    "premium": 0.5257845293053607
+  },
+  {
+    "sweep": "A",
+    "instance": "frozen",
+    "rho": 100,
+    "monotone": true,
+    "spread": 100,
+    "tree": 378352.63513966545,
+    "redundant": 603710.2011517409,
+    "premium": 0.595628377026862
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 1,
+    "monotone": true,
+    "spread": 1,
+    "tree": 95942.70187140109,
+    "redundant": 130071.53317413705,
+    "premium": 0.35572097342517295
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 1.5,
+    "monotone": true,
+    "spread": 1.5,
+    "tree": 110948.44267754159,
+    "redundant": 150659.46344703,
+    "premium": 0.35792319217047286
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 2,
+    "monotone": true,
+    "spread": 2,
+    "tree": 122176.5639006828,
+    "redundant": 166408.81682317643,
+    "premium": 0.3620354960911323
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 3,
+    "monotone": true,
+    "spread": 3,
+    "tree": 139330.85683022623,
+    "redundant": 190668.70509450277,
+    "premium": 0.36846000543032176
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 5,
+    "monotone": true,
+    "spread": 5,
+    "tree": 163022.19857843415,
+    "redundant": 227554.7229489582,
+    "premium": 0.39585114747103467
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 8,
+    "monotone": true,
+    "spread": 8,
+    "tree": 185495.8270656784,
+    "redundant": 266672.2823484635,
+    "premium": 0.4376187678553167
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 12,
+    "monotone": true,
+    "spread": 12,
+    "tree": 208836.2826231143,
+    "redundant": 307418.40381858853,
+    "premium": 0.472054568091431
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 20,
+    "monotone": true,
+    "spread": 20,
+    "tree": 241778.4406424483,
+    "redundant": 367346.44158587465,
+    "premium": 0.5193515212099551
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 35,
+    "monotone": true,
+    "spread": 35,
+    "tree": 283276.0138887638,
+    "redundant": 446871.4604659357,
+    "premium": 0.5775125268509751
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 50,
+    "monotone": true,
+    "spread": 50,
+    "tree": 314467.40669309907,
+    "redundant": 503809.7899703158,
+    "premium": 0.602104953477749
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1000",
+    "rho": 100,
+    "monotone": true,
+    "spread": 100,
+    "tree": 384718.6415491464,
+    "redundant": 633861.7522558523,
+    "premium": 0.6475982284182578
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 1,
+    "monotone": true,
+    "spread": 1,
+    "tree": 106462.70948376042,
+    "redundant": 165367.04537334555,
+    "premium": 0.5532860865106035
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 1.5,
+    "monotone": true,
+    "spread": 1.5,
+    "tree": 122861.39764885498,
+    "redundant": 190369.37585089987,
+    "premium": 0.5494645144359063
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 2,
+    "monotone": true,
+    "spread": 2,
+    "tree": 133256.72204499133,
+    "redundant": 207096.53666284282,
+    "premium": 0.5541169967614918
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 3,
+    "monotone": true,
+    "spread": 3,
+    "tree": 149340.38930396,
+    "redundant": 232863.25996034034,
+    "premium": 0.5592785116314518
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 5,
+    "monotone": true,
+    "spread": 5,
+    "tree": 169764.8982042267,
+    "redundant": 270580.7925262546,
+    "premium": 0.5938559465970796
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 8,
+    "monotone": true,
+    "spread": 8,
+    "tree": 192501.92665936213,
+    "redundant": 305997.0337653174,
+    "premium": 0.5895790711060687
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 12,
+    "monotone": true,
+    "spread": 12,
+    "tree": 214875.97376084977,
+    "redundant": 338742.55834931275,
+    "premium": 0.5764561873554213
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 20,
+    "monotone": true,
+    "spread": 20,
+    "tree": 241876.67988739995,
+    "redundant": 383868.26281681214,
+    "premium": 0.587041226940576
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 35,
+    "monotone": true,
+    "spread": 35,
+    "tree": 272042.75459048554,
+    "redundant": 438217.8280730991,
+    "premium": 0.6108417543880633
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 50,
+    "monotone": true,
+    "spread": 50,
+    "tree": 293171.9403321981,
+    "redundant": 478803.8277309181,
+    "premium": 0.6331843599642495
+  },
+  {
+    "sweep": "A",
+    "instance": "gen1007",
+    "rho": 100,
+    "monotone": true,
+    "spread": 100,
+    "tree": 339788.92211995705,
+    "redundant": 572258.5850120421,
+    "premium": 0.6841590403880657
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 0,
+    "monotone": false,
+    "spread": 11.326713554120417,
+    "profile": {
+      "track": 0.294,
+      "unclassified": 1.4588,
+      "residential": 2.7047,
+      "tertiary": 0.5986,
+      "secondary": 0.2647,
+      "primary": 0.9366,
+      "trunk": 1.6129,
+      "motorway": 2.9987
+    },
+    "tree": 63465.96218669641,
+    "redundant": 111151.06735043768,
+    "premium": 0.7513492826826931
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 1,
+    "monotone": false,
+    "spread": 16.888791541921943,
+    "profile": {
+      "track": 0.2965,
+      "unclassified": 0.2745,
+      "residential": 2.0257,
+      "tertiary": 1.6065,
+      "secondary": 4.6357,
+      "primary": 2.671,
+      "trunk": 0.9032,
+      "motorway": 0.7602
+    },
+    "tree": 106959.78558680676,
+    "redundant": 185917.27957289346,
+    "premium": 0.7381979456382337
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 2,
+    "monotone": false,
+    "spread": 40.80772564322499,
+    "profile": {
+      "track": 13.0727,
+      "unclassified": 0.7492,
+      "residential": 0.4561,
+      "tertiary": 0.3203,
+      "secondary": 1.1002,
+      "primary": 1.1564,
+      "trunk": 0.7083,
+      "motorway": 0.9397
+    },
+    "tree": 70539.38456519668,
+    "redundant": 94432.91227032478,
+    "premium": 0.3387260585332197
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 3,
+    "monotone": false,
+    "spread": 17.93193845485132,
+    "profile": {
+      "track": 1.314,
+      "unclassified": 1.9985,
+      "residential": 2.9946,
+      "tertiary": 1.2335,
+      "secondary": 0.167,
+      "primary": 2.0172,
+      "trunk": 0.2418,
+      "motorway": 0.8425
+    },
+    "tree": 105455.80637183535,
+    "redundant": 176798.41622673746,
+    "premium": 0.6765166595317598
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 4,
+    "monotone": false,
+    "spread": 118.40425732967432,
+    "profile": {
+      "track": 0.2291,
+      "unclassified": 1.0021,
+      "residential": 0.4591,
+      "tertiary": 1.2385,
+      "secondary": 27.121,
+      "primary": 0.9526,
+      "trunk": 2.3218,
+      "motorway": 0.2662
+    },
+    "tree": 59813.79371279995,
+    "redundant": 114650.46203562594,
+    "premium": 0.9167896720634046
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 5,
+    "monotone": false,
+    "spread": 5.304843565133971,
+    "profile": {
+      "track": 0.7497,
+      "unclassified": 1.9396,
+      "residential": 0.9115,
+      "tertiary": 1.448,
+      "secondary": 1.1089,
+      "primary": 0.3656,
+      "trunk": 1.7572,
+      "motorway": 0.444
+    },
+    "tree": 105607.9958071713,
+    "redundant": 171093.1757819589,
+    "premium": 0.6200778593919765
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 6,
+    "monotone": false,
+    "spread": 11.868678629371498,
+    "profile": {
+      "track": 6.4997,
+      "unclassified": 0.6034,
+      "residential": 1.9859,
+      "tertiary": 1.0024,
+      "secondary": 2.592,
+      "primary": 0.5476,
+      "trunk": 2.7152,
+      "motorway": 0.8835
+    },
+    "tree": 129572.26798539661,
+    "redundant": 229414.55844008306,
+    "premium": 0.7705529277757115
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 7,
+    "monotone": false,
+    "spread": 11.270394614317349,
+    "profile": {
+      "track": 3.5371,
+      "unclassified": 1.8667,
+      "residential": 1.1518,
+      "tertiary": 0.4583,
+      "secondary": 2.155,
+      "primary": 1.597,
+      "trunk": 5.165,
+      "motorway": 0.6859
+    },
+    "tree": 134306.0832236556,
+    "redundant": 199181.075329758,
+    "premium": 0.4830383743532165
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 8,
+    "monotone": false,
+    "spread": 4.802935482885997,
+    "profile": {
+      "track": 1.7415,
+      "unclassified": 1.6619,
+      "residential": 1.3271,
+      "tertiary": 1.2318,
+      "secondary": 1.1998,
+      "primary": 0.5497,
+      "trunk": 0.3626,
+      "motorway": 0.6727
+    },
+    "tree": 111892.97146520247,
+    "redundant": 197465.27198844193,
+    "premium": 0.7647692201100544
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 9,
+    "monotone": false,
+    "spread": 3.7728642254206517,
+    "profile": {
+      "track": 1.8055,
+      "unclassified": 4.5321,
+      "residential": 2.6567,
+      "tertiary": 2.867,
+      "secondary": 2.1756,
+      "primary": 2.0107,
+      "trunk": 1.2012,
+      "motorway": 2.1631
+    },
+    "tree": 263136.4659989359,
+    "redundant": 390342.27672583424,
+    "premium": 0.48342144538572884
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 10,
+    "monotone": false,
+    "spread": 22.10532175888385,
+    "profile": {
+      "track": 5.8925,
+      "unclassified": 0.7206,
+      "residential": 0.4997,
+      "tertiary": 7.0999,
+      "secondary": 1.2772,
+      "primary": 2.6405,
+      "trunk": 2.3962,
+      "motorway": 0.3212
+    },
+    "tree": 81775.65979590494,
+    "redundant": 146495.22947085236,
+    "premium": 0.7914282787381235
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 11,
+    "monotone": false,
+    "spread": 27.59509026278312,
+    "profile": {
+      "track": 11.3985,
+      "unclassified": 5.9051,
+      "residential": 1.1936,
+      "tertiary": 2.1223,
+      "secondary": 1.1353,
+      "primary": 0.4131,
+      "trunk": 0.894,
+      "motorway": 1.4536
+    },
+    "tree": 159037.9645734142,
+    "redundant": 273848.50578818115,
+    "premium": 0.7219065052971596
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 12,
+    "monotone": false,
+    "spread": 8.293830407333992,
+    "profile": {
+      "track": 3.052,
+      "unclassified": 2.0325,
+      "residential": 1.0613,
+      "tertiary": 3.876,
+      "secondary": 0.4673,
+      "primary": 2.2098,
+      "trunk": 3.041,
+      "motorway": 0.7468
+    },
+    "tree": 129534.9393421353,
+    "redundant": 209373.1619646129,
+    "premium": 0.6163450805469881
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 13,
+    "monotone": false,
+    "spread": 28.18617058828953,
+    "profile": {
+      "track": 0.1669,
+      "unclassified": 0.404,
+      "residential": 1.2675,
+      "tertiary": 1.6953,
+      "secondary": 4.7031,
+      "primary": 0.3663,
+      "trunk": 1.002,
+      "motorway": 1.9132
+    },
+    "tree": 92272.46803043563,
+    "redundant": 157275.24255514747,
+    "premium": 0.704465545489376
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 14,
+    "monotone": false,
+    "spread": 107.98131793589889,
+    "profile": {
+      "track": 0.8541,
+      "unclassified": 0.0935,
+      "residential": 2.24,
+      "tertiary": 10.0972,
+      "secondary": 2.73,
+      "primary": 0.3995,
+      "trunk": 0.6621,
+      "motorway": 1.2483
+    },
+    "tree": 123978.18068045129,
+    "redundant": 215612.1762075207,
+    "premium": 0.7391138910422659
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 15,
+    "monotone": false,
+    "spread": 23.904182021018983,
+    "profile": {
+      "track": 12.0498,
+      "unclassified": 1.8541,
+      "residential": 1.1204,
+      "tertiary": 4.7469,
+      "secondary": 0.9215,
+      "primary": 6.4325,
+      "trunk": 0.5041,
+      "motorway": 0.622
+    },
+    "tree": 132471.96521531124,
+    "redundant": 219985.28355748174,
+    "premium": 0.6606176499301728
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 16,
+    "monotone": false,
+    "spread": 25.687120633438976,
+    "profile": {
+      "track": 2.0562,
+      "unclassified": 4.1552,
+      "residential": 1.9231,
+      "tertiary": 1.352,
+      "secondary": 0.1618,
+      "primary": 0.4902,
+      "trunk": 0.543,
+      "motorway": 0.5865
+    },
+    "tree": 98608.81916482405,
+    "redundant": 191468.5963230527,
+    "premium": 0.9416985006484471
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 17,
+    "monotone": false,
+    "spread": 3.2979853602440583,
+    "profile": {
+      "track": 1.7976,
+      "unclassified": 0.7152,
+      "residential": 2.1983,
+      "tertiary": 1.0858,
+      "secondary": 0.7169,
+      "primary": 1.1254,
+      "trunk": 1.5353,
+      "motorway": 2.3587
+    },
+    "tree": 107708.92556078266,
+    "redundant": 173150.37748546773,
+    "premium": 0.607576870570071
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 18,
+    "monotone": false,
+    "spread": 19.442214986160614,
+    "profile": {
+      "track": 0.6203,
+      "unclassified": 0.7924,
+      "residential": 0.2557,
+      "tertiary": 4.972,
+      "secondary": 4.2707,
+      "primary": 0.8362,
+      "trunk": 0.6198,
+      "motorway": 0.2906
+    },
+    "tree": 63858.001407778356,
+    "redundant": 132335.81151274155,
+    "premium": 1.072345024826006
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 19,
+    "monotone": false,
+    "spread": 102.14213939861718,
+    "profile": {
+      "track": 1.1852,
+      "unclassified": 1.2291,
+      "residential": 8.8616,
+      "tertiary": 1.2793,
+      "secondary": 0.4594,
+      "primary": 0.0868,
+      "trunk": 4.0934,
+      "motorway": 1.2085
+    },
+    "tree": 113623.36955633436,
+    "redundant": 173991.55019722343,
+    "premium": 0.5313007427662897
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 20,
+    "monotone": false,
+    "spread": 275.9230627324721,
+    "profile": {
+      "track": 0.2,
+      "unclassified": 1.1977,
+      "residential": 0.2002,
+      "tertiary": 32.4725,
+      "secondary": 3.0616,
+      "primary": 1.7726,
+      "trunk": 0.8394,
+      "motorway": 0.1177
+    },
+    "tree": 40257.33130215131,
+    "redundant": 106570.86670257898,
+    "premium": 1.6472412168285966
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 21,
+    "monotone": false,
+    "spread": 43.935784471273536,
+    "profile": {
+      "track": 0.8813,
+      "unclassified": 0.2113,
+      "residential": 1.8152,
+      "tertiary": 0.1178,
+      "secondary": 0.4034,
+      "primary": 3.3857,
+      "trunk": 5.1751,
+      "motorway": 0.3069
+    },
+    "tree": 32715.127912721866,
+    "redundant": 55350.92371761181,
+    "premium": 0.6919060767629648
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 22,
+    "monotone": false,
+    "spread": 11.171364967850806,
+    "profile": {
+      "track": 0.2157,
+      "unclassified": 2.4094,
+      "residential": 2.3469,
+      "tertiary": 0.3729,
+      "secondary": 0.4994,
+      "primary": 0.4996,
+      "trunk": 0.3044,
+      "motorway": 0.5065
+    },
+    "tree": 54168.682755771915,
+    "redundant": 96059.81100717917,
+    "premium": 0.7733458913941114
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 23,
+    "monotone": false,
+    "spread": 29.06964508908732,
+    "profile": {
+      "track": 3.4929,
+      "unclassified": 1.9931,
+      "residential": 7.8193,
+      "tertiary": 0.9173,
+      "secondary": 0.8734,
+      "primary": 0.3744,
+      "trunk": 0.8836,
+      "motorway": 0.269
+    },
+    "tree": 116038.19892194949,
+    "redundant": 250595.69000135496,
+    "premium": 1.1595965150227174
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 24,
+    "monotone": false,
+    "spread": 24.96561012354016,
+    "profile": {
+      "track": 0.1691,
+      "unclassified": 2.0077,
+      "residential": 4.2212,
+      "tertiary": 2.3091,
+      "secondary": 3.7902,
+      "primary": 1.287,
+      "trunk": 0.4876,
+      "motorway": 1.0902
+    },
+    "tree": 166755.71149903562,
+    "redundant": 308168.8822021344,
+    "premium": 0.848025950247087
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 25,
+    "monotone": false,
+    "spread": 22.67996927513091,
+    "profile": {
+      "track": 0.6879,
+      "unclassified": 0.3291,
+      "residential": 0.1841,
+      "tertiary": 0.227,
+      "secondary": 0.9945,
+      "primary": 1.1627,
+      "trunk": 0.6221,
+      "motorway": 4.1745
+    },
+    "tree": 36882.95893403136,
+    "redundant": 51629.71833789199,
+    "premium": 0.399825822820685
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 26,
+    "monotone": false,
+    "spread": 26.596657075985448,
+    "profile": {
+      "track": 1.196,
+      "unclassified": 1.7911,
+      "residential": 3.3824,
+      "tertiary": 0.4404,
+      "secondary": 0.1395,
+      "primary": 2.122,
+      "trunk": 0.5024,
+      "motorway": 3.7098
+    },
+    "tree": 82752.32275334164,
+    "redundant": 142015.74267777233,
+    "premium": 0.7161541567972189
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 27,
+    "monotone": false,
+    "spread": 21.916890229805418,
+    "profile": {
+      "track": 1.4015,
+      "unclassified": 2.7365,
+      "residential": 2.1462,
+      "tertiary": 0.1249,
+      "secondary": 2.0528,
+      "primary": 0.5101,
+      "trunk": 0.4695,
+      "motorway": 0.6472
+    },
+    "tree": 105713.36809847255,
+    "redundant": 178975.1065244331,
+    "premium": 0.6930224601085158
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 28,
+    "monotone": false,
+    "spread": 29.568386342923727,
+    "profile": {
+      "track": 2.1558,
+      "unclassified": 2.4215,
+      "residential": 2.7491,
+      "tertiary": 0.1902,
+      "secondary": 0.554,
+      "primary": 0.093,
+      "trunk": 0.903,
+      "motorway": 1.8224
+    },
+    "tree": 95544.3786170608,
+    "redundant": 162161.9299435299,
+    "premium": 0.6972419758306283
+  },
+  {
+    "sweep": "B",
+    "instance": "frozen",
+    "draw": 29,
+    "monotone": false,
+    "spread": 13.218236670551727,
+    "profile": {
+      "track": 0.4658,
+      "unclassified": 1.2774,
+      "residential": 1.2603,
+      "tertiary": 2.7391,
+      "secondary": 0.4398,
+      "primary": 0.4365,
+      "trunk": 0.4661,
+      "motorway": 5.7695
+    },
+    "tree": 85559.55978621708,
+    "redundant": 138182.67305887133,
+    "premium": 0.6150465641027221
+  }
+]

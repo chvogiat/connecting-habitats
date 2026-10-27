@@ -1,0 +1,846 @@
+[
+  {
+    "species": "white_tailed_deer",
+    "description": "White-tailed deer (Odocoileus virginianus)",
+    "mode": "greedy",
+    "n": 250,
+    "sigma": 0.35,
+    "exact": false,
+    "nominal_optimum": 159460.69,
+    "trace": [
+      {
+        "step": 1,
+        "committed": 1,
+        "support": 0.996,
+        "bought": 1,
+        "price": 0.0,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 2,
+        "committed": 2,
+        "support": 0.888,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 3,
+        "committed": 3,
+        "support": 0.86,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 4,
+        "committed": 4,
+        "support": 0.84,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 5,
+        "committed": 5,
+        "support": 0.948,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 6,
+        "committed": 8,
+        "support": 0.9,
+        "bought": 3,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 7,
+        "committed": 9,
+        "support": 0.792,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 8,
+        "committed": 11,
+        "support": 0.792,
+        "bought": 2,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 9,
+        "committed": 12,
+        "support": 0.924,
+        "bought": 1,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 10,
+        "committed": 14,
+        "support": 0.968,
+        "bought": 2,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 11,
+        "committed": 15,
+        "support": 0.96,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 12,
+        "committed": 16,
+        "support": 0.744,
+        "bought": 1,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 13,
+        "committed": 17,
+        "support": 0.96,
+        "bought": 1,
+        "price": 0.0082256009302355,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 14,
+        "committed": 18,
+        "support": 0.944,
+        "bought": 1,
+        "price": 0.0082256009302355,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 15,
+        "committed": 19,
+        "support": 0.736,
+        "bought": 1,
+        "price": 0.0082256009302355,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 16,
+        "committed": 20,
+        "support": 0.64,
+        "bought": 1,
+        "price": 0.0082256009302355,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 17,
+        "committed": 22,
+        "support": 0.756,
+        "bought": 2,
+        "price": 0.0082256009302355,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 18,
+        "committed": 23,
+        "support": 0.628,
+        "bought": 1,
+        "price": 0.0082256009302355,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 19,
+        "committed": 24,
+        "support": 0.636,
+        "bought": 1,
+        "price": 0.0082256009302355,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 20,
+        "committed": 26,
+        "support": 0.696,
+        "bought": 2,
+        "price": 0.014526526882581825,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 21,
+        "committed": 27,
+        "support": 0.94,
+        "bought": 1,
+        "price": 0.014526526882581825,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 22,
+        "committed": 28,
+        "support": 0.632,
+        "bought": 1,
+        "price": 0.014526526882581825,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 23,
+        "committed": 29,
+        "support": 0.748,
+        "bought": 1,
+        "price": 0.014526526882581825,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 4
+      },
+      {
+        "step": 24,
+        "committed": 31,
+        "support": 0.592,
+        "bought": 2,
+        "price": 0.017281876806126917,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 4
+      },
+      {
+        "step": 25,
+        "committed": 32,
+        "support": 0.876,
+        "bought": 1,
+        "price": 0.017281876806126917,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 4
+      },
+      {
+        "step": 26,
+        "committed": 34,
+        "support": 0.544,
+        "bought": 2,
+        "price": 0.017281876806126917,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 6
+      },
+      {
+        "step": 27,
+        "committed": 36,
+        "support": 0.52,
+        "bought": 2,
+        "price": 0.017281876806126917,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 6
+      },
+      {
+        "step": 28,
+        "committed": 37,
+        "support": 0.74,
+        "bought": 1,
+        "price": 0.017281876806126917,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 6
+      },
+      {
+        "step": 29,
+        "committed": 38,
+        "support": 0.984,
+        "bought": 1,
+        "price": 0.017281876806126917,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 7
+      },
+      {
+        "step": 30,
+        "committed": 39,
+        "support": 0.516,
+        "bought": 1,
+        "price": 0.018677832135305605,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 7
+      },
+      {
+        "step": 31,
+        "committed": 41,
+        "support": 0.688,
+        "bought": 2,
+        "price": 0.018677832135305605,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 8
+      }
+    ],
+    "edges": 41,
+    "components": 1,
+    "independent_cycles": 0,
+    "terminals_touched": 8,
+    "terminals_in_one_component": 8,
+    "is_forest": true,
+    "is_corridor": true
+  },
+  {
+    "species": "eastern_box_turtle",
+    "description": "Eastern box turtle (Terrapene carolina)",
+    "mode": "greedy",
+    "n": 250,
+    "sigma": 0.35,
+    "exact": false,
+    "nominal_optimum": 579635.5,
+    "trace": [
+      {
+        "step": 1,
+        "committed": 2,
+        "support": 1.0,
+        "bought": 2,
+        "price": 0.0,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 2,
+        "committed": 4,
+        "support": 0.992,
+        "bought": 2,
+        "price": 0.0,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 3,
+        "committed": 5,
+        "support": 0.988,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 4,
+        "committed": 7,
+        "support": 0.984,
+        "bought": 2,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 5,
+        "committed": 8,
+        "support": 0.868,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 6,
+        "committed": 10,
+        "support": 0.936,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 7,
+        "committed": 11,
+        "support": 0.848,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 8,
+        "committed": 13,
+        "support": 0.92,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 9,
+        "committed": 14,
+        "support": 0.78,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 10,
+        "committed": 15,
+        "support": 0.988,
+        "bought": 1,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 11,
+        "committed": 16,
+        "support": 0.888,
+        "bought": 1,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 12,
+        "committed": 17,
+        "support": 0.848,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 13,
+        "committed": 19,
+        "support": 0.936,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 14,
+        "committed": 21,
+        "support": 0.932,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 15,
+        "committed": 22,
+        "support": 0.996,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 16,
+        "committed": 24,
+        "support": 0.952,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 17,
+        "committed": 25,
+        "support": 0.984,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 18,
+        "committed": 27,
+        "support": 0.752,
+        "bought": 2,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 19,
+        "committed": 28,
+        "support": 0.704,
+        "bought": 1,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 20,
+        "committed": 29,
+        "support": 0.916,
+        "bought": 1,
+        "price": 0.007976047015753718,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 21,
+        "committed": 31,
+        "support": 0.648,
+        "bought": 2,
+        "price": 0.007976047015753718,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 5
+      },
+      {
+        "step": 22,
+        "committed": 33,
+        "support": 0.54,
+        "bought": 2,
+        "price": 0.00868511331690347,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 6
+      },
+      {
+        "step": 23,
+        "committed": 35,
+        "support": 0.504,
+        "bought": 2,
+        "price": 0.009685569638160585,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 7
+      },
+      {
+        "step": 24,
+        "committed": 42,
+        "support": 0.492,
+        "bought": 7,
+        "price": 0.009685569638160585,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 8
+      }
+    ],
+    "edges": 42,
+    "components": 1,
+    "independent_cycles": 0,
+    "terminals_touched": 8,
+    "terminals_in_one_component": 8,
+    "is_forest": true,
+    "is_corridor": true
+  },
+  {
+    "species": "meadow_vole",
+    "description": "Meadow vole (Microtus pennsylvanicus)",
+    "mode": "greedy",
+    "n": 250,
+    "sigma": 0.35,
+    "exact": false,
+    "nominal_optimum": 456955.95,
+    "trace": [
+      {
+        "step": 1,
+        "committed": 2,
+        "support": 1.0,
+        "bought": 2,
+        "price": 0.0,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 2,
+        "committed": 5,
+        "support": 0.996,
+        "bought": 3,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 3,
+        "committed": 7,
+        "support": 0.984,
+        "bought": 2,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 4,
+        "committed": 8,
+        "support": 0.888,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 5,
+        "committed": 10,
+        "support": 0.924,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 6,
+        "committed": 11,
+        "support": 0.852,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 1
+      },
+      {
+        "step": 7,
+        "committed": 13,
+        "support": 0.912,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 8,
+        "committed": 14,
+        "support": 0.804,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 9,
+        "committed": 15,
+        "support": 0.976,
+        "bought": 1,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 10,
+        "committed": 16,
+        "support": 0.908,
+        "bought": 1,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 11,
+        "committed": 17,
+        "support": 0.844,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 12,
+        "committed": 19,
+        "support": 0.94,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 13,
+        "committed": 21,
+        "support": 0.932,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 14,
+        "committed": 22,
+        "support": 0.996,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 15,
+        "committed": 24,
+        "support": 0.964,
+        "bought": 2,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 16,
+        "committed": 25,
+        "support": 0.992,
+        "bought": 1,
+        "price": 0.0,
+        "components": 4,
+        "cycles": 0,
+        "terminals_joined": 2
+      },
+      {
+        "step": 17,
+        "committed": 27,
+        "support": 0.784,
+        "bought": 2,
+        "price": 0.0,
+        "components": 3,
+        "cycles": 0,
+        "terminals_joined": 3
+      },
+      {
+        "step": 18,
+        "committed": 29,
+        "support": 0.736,
+        "bought": 2,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 5
+      },
+      {
+        "step": 19,
+        "committed": 30,
+        "support": 0.732,
+        "bought": 1,
+        "price": 0.0,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 5
+      },
+      {
+        "step": 20,
+        "committed": 31,
+        "support": 0.948,
+        "bought": 1,
+        "price": 0.001459768715124543,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 5
+      },
+      {
+        "step": 21,
+        "committed": 33,
+        "support": 0.636,
+        "bought": 2,
+        "price": 0.001459768715124543,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 6
+      },
+      {
+        "step": 22,
+        "committed": 35,
+        "support": 0.524,
+        "bought": 2,
+        "price": 0.001459768715124543,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 7
+      },
+      {
+        "step": 23,
+        "committed": 39,
+        "support": 0.492,
+        "bought": 4,
+        "price": 0.001459768715124543,
+        "components": 2,
+        "cycles": 0,
+        "terminals_joined": 7
+      },
+      {
+        "step": 24,
+        "committed": 42,
+        "support": 0.956,
+        "bought": 3,
+        "price": 0.001459768715124543,
+        "components": 1,
+        "cycles": 0,
+        "terminals_joined": 8
+      }
+    ],
+    "edges": 42,
+    "components": 1,
+    "independent_cycles": 0,
+    "terminals_touched": 8,
+    "terminals_in_one_component": 8,
+    "is_forest": true,
+    "is_corridor": true
+  }
+]
